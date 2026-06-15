@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pharma Practice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header {
+            background-color: #1e3a8a; /* لون أزرق غامق زي تطبيقك القديم */
+            color: white;
+            width: 100%;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .container {
+            width: 90%;
+            max-width: 400px;
+            margin-top: 30px;
+        }
+        .topic-btn {
+            display: block;
+            background-color: #ffffff;
+            color: #333;
+            text-decoration: none;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: 0.3s;
+            border-left: 5px solid #1e3a8a;
+        }
+        .topic-btn:hover {
+            background-color: #e0e7ff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        Topics
+    </div>
+
+    <div class="container">
+        <!-- زراير المواضيع، كل زرار بيروح للملف بتاعه -->
+        <a href="eyelid_lecture.html" class="topic-btn">Eyelid</a>
+        <a href="rhinitis_lecture.html" class="topic-btn">Rhinitis</a>
+        <a href="ear_lecture.html" class="topic-btn">Ear</a>
+        <a href="headache_lecture.html" class="topic-btn">Headache</a>
+        <a href="nausea_lecture.html" class="topic-btn">Nausea & Vomiting</a>
+        <!-- تقدر تنسخ السطر اللي فوق وتزود باقي المواضيع براحتك -->
+    </div>
+
+</body>
+</html>
