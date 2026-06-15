@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vaginal Discharge Quiz</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; padding: 15px; margin: 0; }
+        .quiz-container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { text-align: center; font-size: 1.4rem; color: #8e44ad; }
+        .question { font-size: 1.1rem; margin-bottom: 20px; color: #34495e; font-weight: bold; }
+        .options button { display: block; width: 100%; margin: 8px 0; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1rem; background: #fff; text-align: left; }
+        .correct { background-color: #2ecc71 !important; color: white; border-color: #27ae60 !important; }
+        .wrong { background-color: #e74c3c !important; color: white; border-color: #c0392b !important; }
+        .hint { margin-top: 15px; color: #856404; background: #fff3cd; padding: 12px; border-radius: 8px; display: none; font-size: 0.9rem; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; font-size: 1rem; margin-top: 10px; }
+        #hintBtn { background: #f39c12; }
+        #nextBtn { background: #8e44ad; display: none; }
+        #score { text-align: center; font-weight: bold; margin-bottom: 10px; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+<div class="quiz-container">
+    <h1>Vaginal Discharge Quiz</h1>
+    <div id="score">Question 1 / 50</div>
+    <div id="q-box"></div>
+</div>
+<script>
+    const questions = [
+        {"q": "Healthy vaginal pH is:", "options": ["A) Acidic", "B) Alkaline", "C) Neutral", "D) Highly Basic"], "ans": "A", "hint": "Low pH prevents pathogens[cite: 6]."},
+        {"q": "Normal discharge during ovulation is:", "options": ["A) Clear", "B) White clumpy", "C) Grey", "D) Yellow"], "ans": "A", "hint": "Clear and watery[cite: 6]."},
+        {"q": "Yeast infection discharge looks like:", "options": ["A) Clear", "B) White cottage cheese", "C) Grey", "D) Green"], "ans": "B", "hint": "Thick and clumpy[cite: 6]."},
+        {"q": "Bacterial Vaginosis (BV) discharge is:", "options": ["A) White clumpy", "B) Grey/thin with fishy odor", "C) Green froth", "D) Clear"], "ans": "B", "hint": "Strong fishy odor[cite: 6]."},
+        {"q": "Most likely cause of abnormal discharge?", "options": ["A) Yeast", "B) Bacterial Vaginosis", "C) Trichomoniasis", "D) Chlamydia"], "ans": "B", "hint": "Statistically most common[cite: 6]."},
+        {"q": "Which is treatable OTC?", "options": ["A) BV", "B) Trichomoniasis", "C) Thrush", "D) Gonorrhea"], "ans": "C", "hint": "Fungal only[cite: 6]."},
+        {"q": "Defining symptom of Thrush?", "options": ["A) Fever", "B) Intense vulval itching", "C) Pain", "D) Odor"], "ans": "B", "hint": "Severe pruritus[cite: 6]."},
+        {"q": "Thrush trigger?", "options": ["A) Water", "B) Antibiotics", "C) Cold", "D) Stress"], "ans": "B", "hint": "Kills healthy flora[cite: 6]."},
+        {"q": "Thrush trigger?", "options": ["A) Diabetes", "B) Gym", "C) Diet", "D) Sleep"], "ans": "A", "hint": "High sugar favors yeast[cite: 6]."},
+        {"q": "Refer prepubertal cases?", "options": ["A) Yes", "B) No", "C) Only if pain", "D) Only if odor"], "ans": "A", "hint": "Rare before puberty[cite: 6]."},
+        {"q": "BV odor type?", "options": ["A) Yeasty", "B) Fishy", "C) No odor", "D) Floral"], "ans": "B", "hint": "Volatile amines[cite: 6]."},
+        {"q": "Trichomoniasis discharge?", "options": ["A) Clear", "B) Frothy yellow-green", "C) White", "D) Grey"], "ans": "B", "hint": "Frothy and colorful[cite: 6]."},
+        {"q": "Trichomoniasis pain?", "options": ["A) Dysuria + Painful sex", "B) None", "C) Only itch", "D) Fever"], "ans": "A", "hint": "Inflammation sign[cite: 6]."},
+        {"q": "Refer for BV/Trich?", "options": ["A) OTC Clotrimazole", "B) Prescription needed", "C) Wait", "D) Water only"], "ans": "B", "hint": "Requires antibiotics[cite: 6]."},
+        {"q": "Dysuria + discharge = ?", "options": ["A) Red Flag", "B) Yeast", "C) Normal", "D) Allergy"], "ans": "A", "hint": "Suspect UTI/STI[cite: 6]."},
+        {"q": "Thrush onset?", "options": ["A) Sudden", "B) Gradual", "C) Months", "D) Years"], "ans": "A", "hint": "Acute start[cite: 6]."},
+        {"q": "BV onset?", "options": ["A) Sudden", "B) Gradual/insidious", "C) Immediate", "D) Never"], "ans": "B", "hint": "Slow development[cite: 6]."},
+        {"q": "Post-menopausal discharge?", "options": ["A) Refer", "B) OTC Yeast", "C) Normal", "D) Ignore"], "ans": "A", "hint": "Atrophic vaginitis risk[cite: 6]."},
+        {"q": "Treatment failure > 2 months?", "options": ["A) Refer", "B) Double dose", "C) Change cream", "D) Wait"], "ans": "A", "hint": "Persistent infection[cite: 6]."},
+        {"q": "Topical Thrush dose time?", "options": ["A) Day", "B) Night", "C) Lunch", "D) Anytime"], "ans": "B", "hint": "Better retention[cite: 6]."},
+        {"q": "Pessary advice?", "options": ["A) Stand", "B) Insert deeply", "C) Halfway", "D) Multiple"], "ans": "B", "hint": "Deep coating[cite: 6]."},
+        {"q": "Pessary + Condoms?", "options": ["A) No effect", "B) Damages latex", "C) Better", "D) Lubricates"], "ans": "B", "hint": "Oil-based damage[cite: 6]."},
+        {"q": "Fluconazole convenience?", "options": ["A) Single dose", "B) 7 days", "C) 1 month", "D) Weekly"], "ans": "A", "hint": "Simple oral dose[cite: 6]."},
+        {"q": "Fluconazole interactions?", "options": ["A) None", "B) Possible (Liver)", "C) Vitamins", "D) Water"], "ans": "B", "hint": "Narrow therapeutic window[cite: 6]."},
+        {"q": "Unimproved after 7 days?", "options": ["A) Refer", "B) Continue", "C) Switch", "D) Wait"], "ans": "A", "hint": "Failed trial[cite: 6]."},
+        {"q": "Prevention?", "options": ["A) Perfume", "B) Cotton underwear", "C) Douching", "D) Nylon"], "ans": "B", "hint": "Breathable[cite: 6]."},
+        {"q": "Pregnancy Thrush?", "options": ["A) OTC", "B) Refer", "C) Ignore", "D) Herbs"], "ans": "B", "hint": "Safety monitoring[cite: 6]."},
+        {"q": "Strong odor rules out?", "options": ["A) Thrush", "B) BV", "C) Trich", "D) STI"], "ans": "A", "hint": "Thrush is odorless[cite: 6]."},
+        {"q": "Green/Yellow suspicious for?", "options": ["A) Yeast", "B) STI", "C) Normal", "D) Allergy"], "ans": "B", "hint": "Purulent[cite: 6]."},
+        {"q": "Recurrent = ?", "options": ["A) Red Flag", "B) Normal", "C) Mild", "D) Cure"], "ans": "A", "hint": "Investigate cause[cite: 6]."},
+        {"q": "Cottage cheese = ?", "options": ["A) Thrush", "B) BV", "C) Trich", "D) Normal"], "ans": "A", "hint": "Texture visual[cite: 6]."},
+        {"q": "Itching NO discharge?", "options": ["A) Not Thrush", "B) Can still be Thrush", "C) Normal", "D) Cancer"], "ans": "B", "hint": "Discharge not mandatory[cite: 6]."},
+        {"q": "Topical cream side effect?", "options": ["A) Irritation", "B) Bleeding", "C) Hearing loss", "D) Hair loss"], "ans": "A", "hint": "Inflamed skin reaction[cite: 6]."},
+        {"q": "Recurrent trigger?", "options": ["A) Water", "B) Douching", "C) Running", "D) Sleep"], "ans": "B", "hint": "Disrupts flora[cite: 6]."},
+        {"q": "BV overgrowth of?", "options": ["A) Yeast", "B) Anaerobic bacteria", "C) Lactobacilli", "D) Virus"], "ans": "B", "hint": "Gardnerella etc[cite: 6]."},
+        {"q": "Fever + Abd pain?", "options": ["A) Refer", "B) OTC Yeast", "C) Wait", "D) Heat"], "ans": "A", "hint": "PID risk[cite: 6]."},
+        {"q": "Lactobacilli role?", "options": ["A) Acid producer", "B) Pathogen", "C) Bloating", "D) None"], "ans": "A", "hint": "Protective acid[cite: 6]."},
+        {"q": "Fishy smell OTC advice?", "options": ["A) Sell cream", "B) Refer", "C) Double dose", "D) Ignore"], "ans": "B", "hint": "Bacterial issue[cite: 6]."},
+        {"q": "Fluconazole in pregnancy?", "options": ["A) Safe", "B) Contraindicated", "C) Dose half", "D) Topical only"], "ans": "B", "hint": "Fetal systemic risk[cite: 6]."},
+        {"q": "Painful sex + Frothy?", "options": ["A) Thrush", "B) Trichomoniasis", "C) Normal", "D) BV"], "ans": "B", "hint": "Invasive STI[cite: 6]."},
+        {"q": "Pessary insertion?", "options": ["A) Shallow", "B) Deep", "C) Halfway", "D) Multiple"], "ans": "B", "hint": "Mucosal coverage[cite: 6]."},
+        {"q": "Pregnancy susceptibility?", "options": ["A) Lower glycogen", "B) Higher glycogen", "C) Acidic", "D) No change"], "ans": "B", "hint": "Yeast food[cite: 6]."},
+        {"q": "Blood-stained discharge?", "options": ["A) Normal", "B) Red Flag", "C) Yeast", "D) Diet"], "ans": "B", "hint": "Malignancy check[cite: 6]."},
+        {"q": "Defining factor for OTC Thrush?", "options": ["A) Fishy smell", "B) Intense itch, No red flags", "C) Green", "D) Pain"], "ans": "B", "hint": "Clinical scope[cite: 6]."},
+        {"q": "Can you use OTC creams while pregnant?", "options": ["A) Always", "B) Only under medical advice", "C) Never", "D) Only 1st trim"], "ans": "B", "hint": "Monitor protocol[cite: 6]."},
+        {"q": "Age 60+ discharge?", "options": ["A) Yeast", "B) Refer", "C) OTC", "D) Normal"], "ans": "B", "hint": "Atrophy/Pathology[cite: 6]."},
+        {"q": "Are condoms safe with creams?", "options": ["A) Yes", "B) No, can break", "C) Better", "D) Indifferent"], "ans": "B", "hint": "Oil weakens latex[cite: 6]."},
+        {"q": "Odorless discharge?", "options": ["A) BV", "B) Thrush", "C) Trich", "D) STI"], "ans": "B", "hint": "Bread-like smell[cite: 6]."},
+        {"q": "Triage mindset?", "options": ["A) Sell", "B) Rule out Red Flags", "C) Diagnose", "D) Wait"], "ans": "B", "hint": "Safety first[cite: 6]."},
+        {"q": "Does douching help?", "options": ["A) Yes", "B) No", "C) Sometimes", "D) Essential"], "ans": "B", "hint": "Removes protection[cite: 6]."}
+    ];
+    let qIdx = 0, score = 0;
+    function render() {
+        if(qIdx >= questions.length) { document.getElementById('q-box').innerHTML = `<h3>Score: ${score}/${questions.length}</h3><button class="btn" onclick="location.reload()">Restart</button>`; return; }
+        const q = questions[qIdx];
+        document.getElementById('score').innerText = `Question ${qIdx + 1} / 50`;
+        let h = `<div class='question'>${q.q}</div><div class='options'>`;
+        q.options.forEach(o => h += `<button class='opt' onclick="check('${o[0]}', '${q.ans}', this)">${o}</button>`);
+        h += `</div><button class='btn' id='hintBtn' onclick="hint()">💡 Hint</button><div class='hint' id='h'>${q.hint}</div><button class='btn' id='nextBtn' onclick="next()">Next ➡️</button>`;
+        document.getElementById('q-box').innerHTML = h;
+    }
+    function check(choice, ans, btn) {
+        document.querySelectorAll('.opt').forEach(b => b.disabled = true);
+        if(choice==ans) { btn.classList.add('correct'); score++; } else { btn.classList.add('wrong'); document.querySelectorAll('.opt').forEach(b => { if(b.innerHTML[0] == ans) b.classList.add('correct'); }); }
+        document.getElementById('nextBtn').style.display = 'block';
+    }
+    function hint() { document.getElementById('h').style.display='block'; document.getElementById('hintBtn').disabled = true; }
+    function next() { qIdx++; render(); }
+    render();
+</script>
+</body>
+</html>

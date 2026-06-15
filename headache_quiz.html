@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Headache Management Quiz</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; padding: 15px; margin: 0; }
+        .quiz-container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { text-align: center; font-size: 1.4rem; color: #2c3e50; }
+        .question { font-size: 1.1rem; margin-bottom: 20px; color: #34495e; font-weight: bold; }
+        .options button { display: block; width: 100%; margin: 8px 0; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1rem; background: #fff; text-align: left; }
+        .correct { background-color: #2ecc71 !important; color: white; border-color: #27ae60 !important; }
+        .wrong { background-color: #e74c3c !important; color: white; border-color: #c0392b !important; }
+        .hint { margin-top: 15px; color: #856404; background: #fff3cd; padding: 12px; border-radius: 8px; display: none; font-size: 0.9rem; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; font-size: 1rem; margin-top: 10px; }
+        #hintBtn { background: #f39c12; }
+        #nextBtn { background: #3498db; display: none; }
+        #score { text-align: center; font-weight: bold; margin-bottom: 10px; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+<div class="quiz-container">
+    <h1>Headache Quiz</h1>
+    <div id="score">Question 1 / 50</div>
+    <div id="q-box"></div>
+</div>
+<script>
+    const questions = [
+        {"q": "According to the IHS, which category describes a headache without underlying structural pathology?", "options": ["A) Primary headache", "B) Secondary headache", "C) Cranial neuralgia", "D) Somatic pain"], "ans": "A", "hint": "Self-contained category[cite: 8]."},
+        {"q": "Example of a Cranial Neuralgia?", "options": ["A) Tension", "B) Trigeminal neuralgia", "C) Migraine", "D) Haemorrhage"], "ans": "B", "hint": "Nerve-related head pain[cite: 8]."},
+        {"q": "Most common primary headache?", "options": ["A) Migraine", "B) Cluster", "C) Tension-type", "D) Rebound"], "ans": "C", "hint": "Tight band sensation[cite: 8]."},
+        {"q": "Migraine characteristic?", "options": ["A) Band-like", "B) Sharp eye pain", "C) Dull ache", "D) Unilateral, throbbing + nausea"], "ans": "D", "hint": "Neurological pulsating pain[cite: 8]."},
+        {"q": "Cluster headache symptoms?", "options": ["A) Tearing/Rhinorrhea", "B) Tight band", "C) Aura", "D) Rebound"], "ans": "A", "hint": "Autonomic symptoms[cite: 8]."},
+        {"q": "Tension-type pain quality?", "options": ["A) Pulsating", "B) Band-like pressure", "C) Piercing", "D) Thunderclap"], "ans": "B", "hint": "Squeezing strap sensation[cite: 8]."},
+        {"q": "Migraine aggravated by?", "options": ["A) Rest", "B) Activity", "C) Sleep", "D) Darkness"], "ans": "B", "hint": "Prefer to lie still[cite: 8]."},
+        {"q": "Cluster headache trigger?", "options": ["A) Cheese", "B) Pressure/Altitude shifts", "C) Sleep", "D) Water"], "ans": "B", "hint": "Air pressure sensitive[cite: 8]."},
+        {"q": "Genetic link for which headache?", "options": ["A) Cluster", "B) Tension", "C) Secondary", "D) Rebound"], "ans": "A", "hint": "Strong family runs[cite: 8]."},
+        {"q": "Migraine hormone trigger?", "options": ["A) Testosterone", "B) Estrogen", "C) Thyroxine", "D) Insulin"], "ans": "B", "hint": "Menstrual/OC triggers[cite: 8]."},
+        {"q": "Migraine dietary triggers?", "options": ["A) Carrots", "B) White bread", "C) Aged cheese/nitrates", "D) Rice"], "ans": "C", "hint": "Tyramine/Nitrates[cite: 8]."},
+        {"q": "Tension headache & movement?", "options": ["A) Worsens", "B) No effect", "C) Cures it", "D) Vomiting"], "ans": "B", "hint": "Continue daily life[cite: 8]."},
+        {"q": "Cluster attack restlessness?", "options": ["A) Yes", "B) No", "C) Only in sleep", "D) Never"], "ans": "A", "hint": "Pace/rock back and forth[cite: 8]."},
+        {"q": "Migraine duration (untreated)?", "options": ["A) 3h", "B) 4-72h", "C) 1 week", "D) 10m"], "ans": "B", "hint": "Multiple hours/days[cite: 8]."},
+        {"q": "Cluster attack duration?", "options": ["A) 72h", "B) 7d", "C) 15-180m", "D) 2w"], "ans": "C", "hint": "Short, intense waves[cite: 8]."},
+        {"q": "Secondary headache cause?", "options": ["A) Primary path", "B) Stress", "C) Sleep", "D) Underlying pathology"], "ans": "D", "hint": "Symptom of disease[cite: 8]."},
+        {"q": "Fever + Neck stiffness + Headache?", "options": ["A) Meningitis", "B) Migraine", "C) Cluster", "D) Tension"], "ans": "A", "hint": "Meningeal inflammation[cite: 8]."},
+        {"q": "Meningitis urgent protocol?", "options": ["A) Paracetamol", "B) Lumbar puncture + IV Abx", "C) Rest", "D) Warm compress"], "ans": "B", "hint": "Neurosurgical emergency[cite: 8]."},
+        {"q": "Thunderclap headache?", "options": ["A) Arteritis", "B) Migraine", "C) SAH", "D) Sinusitis"], "ans": "C", "hint": "Worst headache of life[cite: 8]."},
+        {"q": "SAH % of sudden headaches?", "options": ["A) 1", "B) 5", "C) 10", "D) 25"], "ans": "D", "hint": "1 in 4 sudden[cite: 8]."},
+        {"q": "Giant Cell Arteritis target?", "options": ["A) Temporal arteries", "B) Aorta", "C) Veins", "D) Coronary"], "ans": "A", "hint": "Temple tenderness[cite: 8]."},
+        {"q": "GCA complication?", "options": ["A) Hearing", "B) Blindness", "C) Smell", "D) Kidney"], "ans": "B", "hint": "Ischaemic optic nerve[cite: 8]."},
+        {"q": "Wake-up headache (tumor)?", "options": ["A) Tension", "B) Caffeine", "C) Brain mass", "D) MOH"], "ans": "C", "hint": "Raised ICP[cite: 8]."},
+        {"q": "SAH acute imaging?", "options": ["A) Ultrasound", "B) X-ray", "C) MRI", "D) CT Scan"], "ans": "D", "hint": "Speed/Availability[cite: 8]."},
+        {"q": "Structural MRI use?", "options": ["A) Demyelination/Tumors", "B) CT", "C) Ultrasound", "D) X-ray"], "ans": "A", "hint": "Soft-tissue contrast[cite: 8]."},
+        {"q": "Tension headache massage?", "options": ["A) Exercise", "B) Massage temples/neck", "C) Music", "D) Coffee"], "ans": "B", "hint": "Physical relief[cite: 8]."},
+        {"q": "Pregnancy analgesic?", "options": ["A) Aspirin", "B) Ibuprofen", "C) Paracetamol", "D) Naproxen"], "ans": "C", "hint": "Safe trimesters[cite: 8]."},
+        {"q": "MOH definition?", "options": ["A) GCA", "B) Trigeminal", "C) SAH", "D) Med Overuse Headache"], "ans": "D", "hint": "Rebound from analgesics[cite: 8]."},
+        {"q": "Gold standard acute Migraine?", "options": ["A) Triptans", "B) Beta-blockers", "C) TCA", "D) Opioids"], "ans": "A", "hint": "Specific target[cite: 8]."},
+        {"q": "Triptan mechanism?", "options": ["A) 5-HT3", "B) 5-HT1B/1D agonist", "C) COX-1", "D) Dopamine"], "ans": "B", "hint": "Vessel constriction[cite: 8]."},
+        {"q": "Triptan Contraindication?", "options": ["A) Asthma", "B) Ulcer", "C) CAD/Heart disease", "D) Diabetes"], "ans": "C", "hint": "Vasoconstriction risk[cite: 8]."},
+        {"q": "HTN + Triptan?", "options": ["A) Diuretic", "B) Vasodilation", "C) BP spike", "D) Low pulse"], "ans": "C", "hint": "Vessel tightening[cite: 8]."},
+        {"q": "Triptan + SSRI risk?", "options": ["A) Serotonin Syndrome", "B) Anaphylaxis", "C) Renal", "D) Hypoglycemia"], "ans": "A", "hint": "Toxicity/rigidity[cite: 8]."},
+        {"q": "Ergotamine vs Triptans?", "options": ["A) Ergo better", "B) Triptans more predictable", "C) Ergo missing", "D) Ergo tension"], "ans": "B", "hint": "Triptans are safer[cite: 8]."},
+        {"q": "Acute Cluster Tx?", "options": ["A) Paracetamol", "B) Ibuprofen", "C) SC/Nasal Sumatriptan", "D) IV"], "ans": "C", "hint": "Fastest route needed[cite: 8]."},
+        {"q": "Why oral pills fail Cluster?", "options": ["A) Slow absorption", "B) Refusal", "C) Vomiting", "D) Stomach"], "ans": "A", "hint": "Attack peaks too fast[cite: 8]."},
+        {"q": "Prophylaxis threshold?", "options": ["A) 7-9 days/month", "B) 1-2 days", "C) 20 days", "D) Daily"], "ans": "A", "hint": "Significant frequency[cite: 8]."},
+        {"q": "Migraine prophylaxis?", "options": ["A) Sumatriptan", "B) Propranolol", "C) Ibuprofen", "D) Ergot"], "ans": "B", "hint": "Beta-blocker[cite: 8]."},
+        {"q": "Tension prophylaxis?", "options": ["A) Sumatriptan", "B) Topiramate", "C) Amitriptyline", "D) Valproate"], "ans": "C", "hint": "TCA efficacy[cite: 8]."},
+        {"q": "Anticonvulsants for?", "options": ["A) Tension", "B) Serotonin syndrome", "C) MOH", "D) Migraine prevention"], "ans": "D", "hint": "Calms brain[cite: 8]."},
+        {"q": "Nausea + Migraine?", "options": ["A) Yes", "B) No", "C) Cluster", "D) Neuralgia"], "ans": "A", "hint": "GI part of attack[cite: 8]."},
+        {"q": "Migraine anti-emetic?", "options": ["A) Aspirin", "B) Prochlorperazine", "C) Sumatriptan", "D) Topiramate"], "ans": "B", "hint": "Dopamine antagonist[cite: 8]."},
+        {"q": "Avoid opioids because?", "options": ["A) Bleeding", "B) Trigger Cluster", "C) Dependency/MOH", "D) Interacts"], "ans": "C", "hint": "Addiction risk[cite: 8]."},
+        {"q": "Sudden headache + weakness?", "options": ["A) Aura", "B) MOH", "C) Tension", "D) Stroke"], "ans": "D", "hint": "Focal deficit[cite: 8]."},
+        {"q": "Aspirin/Paracetamol/Caffeine?", "options": ["A) First-line acute", "B) Prevention", "C) Contraindicated", "D) Cluster"], "ans": "A", "hint": "Synergistic relief[cite: 8]."},
+        {"q": "Scalp tenderness (GCA)?", "options": ["A) NSAID", "B) Refer/Steroids", "C) Cold", "D) Water"], "ans": "B", "hint": "Prevent blindness[cite: 8]."},
+        {"q": "Tension headache not CI?", "options": ["A) Stroke", "B) Raynaud", "C) Tension itself", "D) CAD"], "ans": "C", "hint": "Not an exclusion[cite: 8]."},
+        {"q": "Meningitis Kernig's?", "options": ["A) Aura", "B) Runny nose", "C) Sweat", "D) Neck stiffness"], "ans": "D", "hint": "Meningeal inflammation[cite: 8]."},
+        {"q": "Cluster Sumatriptan limit?", "options": ["A) 2", "B) 4", "C) 6", "D) Unlimited"], "ans": "A", "hint": "24h safety[cite: 8]."},
+        {"q": "Paracetamol safety?", "options": ["A) COX-1", "B) Safe/effective", "C) Prevents", "D) Vasodilator"], "ans": "B", "hint": "First-line profile[cite: 8]."}
+    ];
+    let qIdx = 0, score = 0;
+    function render() {
+        if(qIdx >= questions.length) { document.getElementById('q-box').innerHTML = `<h3>Score: ${score}/${questions.length}</h3><button class="btn" onclick="location.reload()">Restart</button>`; return; }
+        const q = questions[qIdx];
+        document.getElementById('score').innerText = `Question ${qIdx + 1} / 50`;
+        let h = `<div class='question'>${q.q}</div><div class='options'>`;
+        q.options.forEach(o => h += `<button class='opt' onclick="check('${o[0]}', '${q.ans}', this)">${o}</button>`);
+        h += `</div><button class='btn' id='hintBtn' onclick="hint()">💡 Hint</button><div class='hint' id='h'>${q.hint}</div><button class='btn' id='nextBtn' onclick="next()">Next ➡️</button>`;
+        document.getElementById('q-box').innerHTML = h;
+    }
+    function check(choice, ans, btn) {
+        document.querySelectorAll('.opt').forEach(b => b.disabled = true);
+        if(choice==ans) { btn.classList.add('correct'); score++; } else { btn.classList.add('wrong'); document.querySelectorAll('.opt').forEach(b => { if(b.innerHTML[0] == ans) b.classList.add('correct'); }); }
+        document.getElementById('nextBtn').style.display = 'block';
+    }
+    function hint() { document.getElementById('h').style.display='block'; document.getElementById('hintBtn').disabled = true; }
+    function next() { qIdx++; render(); }
+    render();
+</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pain Management Quiz</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f4f7f6; padding: 15px; margin: 0; }
+        .quiz-container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { text-align: center; font-size: 1.4rem; color: #2c3e50; }
+        .question { font-size: 1.1rem; margin-bottom: 20px; color: #34495e; font-weight: bold; }
+        .options button { display: block; width: 100%; margin: 8px 0; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1rem; background: #fff; text-align: left; }
+        .correct { background-color: #2ecc71 !important; color: white; border-color: #27ae60 !important; }
+        .wrong { background-color: #e74c3c !important; color: white; border-color: #c0392b !important; }
+        .hint { margin-top: 15px; color: #856404; background: #fff3cd; padding: 12px; border-radius: 8px; display: none; font-size: 0.9rem; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; font-size: 1rem; margin-top: 10px; }
+        #hintBtn { background: #f39c12; }
+        #nextBtn { background: #3498db; display: none; }
+        #score { text-align: center; font-weight: bold; margin-bottom: 10px; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+<div class="quiz-container">
+    <h1>Pain Management Quiz</h1>
+    <div id="score">Question 1 / 50</div>
+    <div id="q-box"></div>
+</div>
+<script>
+    const questions = [
+        {"q": "Pain lasting <3 months, appearing suddenly, is defined as:", "options": ["A) Chronic", "B) Acute", "C) Referred", "D) Breakthrough"], "ans": "B", "hint": "Standard clinical threshold for acute pain."},
+        {"q": "Pain lasting >3 months and impacting quality of life is:", "options": ["A) Acute", "B) Chronic", "C) Neuropathic", "D) Somatic"], "ans": "B", "hint": "Long-term pain threshold[cite: 4]."},
+        {"q": "Pain from tissue damage is called:", "options": ["A) Neuropathic", "B) Nociceptive", "C) Central", "D) Mixed"], "ans": "B", "hint": "Result of tissue injury[cite: 4]."},
+        {"q": "Pain described as burning or electric is:", "options": ["A) Nociceptive", "B) Neuropathic", "C) Somatic", "D) Visceral"], "ans": "B", "hint": "Associated with nerve damage[cite: 4]."},
+        {"q": "A-delta fibers transmit:", "options": ["A) Slow pain", "B) Fast, sharp pain", "C) No pain", "D) Only vibration"], "ans": "B", "hint": "Myelinated fibers for speed[cite: 4]."},
+        {"q": "C-fibers transmit:", "options": ["A) Slow, dull, aching pain", "B) Fast pain", "C) Motor signals", "D) Reflexes"], "ans": "A", "hint": "Unmyelinated fibers[cite: 4]."},
+        {"q": "What is transduction?", "options": ["A) Pain perception", "B) Converting stimulus to electrical signal", "C) Modulation", "D) Brain signal"], "ans": "B", "hint": "Translating injury to nerve language[cite: 4]."},
+        {"q": "The primary inflammatory targets of NSAIDs are:", "options": ["A) Histamine", "B) Prostaglandins", "C) Dopamine", "D) Adrenaline"], "ans": "B", "hint": "They inhibit the production of these mediators[cite: 4]."},
+        {"q": "In SOCRATES, what does 'O' stand for?", "options": ["A) Onset", "B) Observation", "C) Origin", "D) Overdose"], "ans": "A", "hint": "When and how did it start?[cite: 4]."},
+        {"q": "What is the 'C' in SOCRATES?", "options": ["A) Color", "B) Character", "C) Cause", "D) Cold"], "ans": "B", "hint": "What does it feel like?[cite: 4]."},
+        {"q": "What is the 'R' in SOCRATES?", "options": ["A) Radiation", "B) Relief", "C) Response", "D) Redness"], "ans": "A", "hint": "Does it travel?[cite: 4]."},
+        {"q": "What is the 'S' in SOCRATES (end)?", "options": ["A) Swelling", "B) Severity", "C) Site", "D) Sleep"], "ans": "B", "hint": "0 to 10 scale[cite: 4]."},
+        {"q": "Which mnemonic helps identify Red Flags?", "options": ["A) WWHAM", "B) SOCRATES", "C) TUNAFISH", "D) ABCDE"], "ans": "C", "hint": "Used for sinister symptoms[cite: 4]."},
+        {"q": "What does the 'T' in TUNAFISH mean?", "options": ["A) Trauma", "B) Timing", "C) Temperature", "D) Toxicity"], "ans": "A", "hint": "Fall or accident[cite: 4]."},
+        {"q": "What does the 'H' in TUNAFISH mean?", "options": ["A) Headache", "B) History of cancer", "C) Heartburn", "D) Hypertension"], "ans": "B", "hint": "Cancer history is a red flag[cite: 4]."},
+        {"q": "Max daily dose of Paracetamol?", "options": ["A) 1g", "B) 2g", "C) 4g", "D) 8g"], "ans": "C", "hint": "To prevent hepatotoxicity[cite: 4]."},
+        {"q": "Risk group for Paracetamol toxicity?", "options": ["A) Healthy teens", "B) Heavy alcohol users", "C) Athletes", "D) Asthma patients"], "ans": "B", "hint": "Depleted glutathione stores[cite: 4]."},
+        {"q": "How do NSAIDs work?", "options": ["A) COX inhibition", "B) Opioid agonist", "C) Sodium block", "D) Histamine increase"], "ans": "A", "hint": "Blocks prostaglandin synthesis[cite: 4]."},
+        {"q": "Max OTC duration for NSAIDs?", "options": ["A) 1 day", "B) 3-5 days", "C) 2 weeks", "D) 1 month"], "ans": "B", "hint": "Minimize GI/renal risk[cite: 4]."},
+        {"q": "Primary risks of oral NSAIDs?", "options": ["A) Lung/Brain", "B) GI/Renal", "C) Skin/Eye", "D) Liver/Heart"], "ans": "B", "hint": "Prostaglandins protect these organs[cite: 4]."},
+        {"q": "NSAIDs contraindication?", "options": ["A) Heart failure", "B) Mild cold", "C) Dry skin", "D) Fatigue"], "ans": "A", "hint": "Fluid retention issues[cite: 4]."},
+        {"q": "Advantage of Topical NSAIDs?", "options": ["A) Cheaper", "B) Localized effect/low systemic risk", "C) Faster acting", "D) Stronger"], "ans": "B", "hint": "Avoids systemic absorption[cite: 4]."},
+        {"q": "Dosing for children?", "options": ["A) Age", "B) Height", "C) Body weight", "D) Gender"], "ans": "C", "hint": "Most accurate parameter[cite: 4]."},
+        {"q": "Preferred analgesic in elderly?", "options": ["A) Ibuprofen", "B) Paracetamol", "C) Aspirin", "D) Naproxen"], "ans": "B", "hint": "NSAIDs damage elderly GI/renal systems[cite: 4]."},
+        {"q": "Analgesic contraindicated in 3rd trimester?", "options": ["A) Paracetamol", "B) Ibuprofen", "C) Topical menthol", "D) Codeine"], "ans": "B", "hint": "Affects fetal heart vessels[cite: 4]."},
+        {"q": "Safest OTC for pregnant headache?", "options": ["A) Naproxen", "B) Paracetamol", "C) Aspirin", "D) Diclofenac"], "ans": "B", "hint": "Decades of safety data[cite: 4]."},
+        {"q": "Combination remedies risk?", "options": ["A) Drowsiness", "B) Hidden Paracetamol toxicity", "C) Ineffectiveness", "D) Cost"], "ans": "B", "hint": "Exceeding daily dose[cite: 4]."},
+        {"q": "Hypertension safe option?", "options": ["A) Ibuprofen", "B) Diclofenac", "C) Paracetamol", "D) Naproxen"], "ans": "C", "hint": "NSAIDs spike blood pressure[cite: 4]."},
+        {"q": "Cold therapy for?", "options": ["A) Acute injury", "B) Chronic stiffness", "C) Arthritis", "D) Muscle knots"], "ans": "A", "hint": "Reduces acute swelling[cite: 4]."},
+        {"q": "Heat therapy for?", "options": ["A) Acute swelling", "B) Chronic muscle stiffness", "C) Fever", "D) Bleeding"], "ans": "B", "hint": "Relaxes stiff muscles[cite: 4]."},
+        {"q": "Hyperalgesia is:", "options": ["A) No pain", "B) Exaggerated response to mild stimulus", "C) Hallucination", "D) Touch pain"], "ans": "B", "hint": "Excessive response[cite: 4]."},
+        {"q": "Allodynia is:", "options": ["A) Analgesia", "B) Hyperalgesia", "C) Pain from non-painful stimulus", "D) Numbness"], "ans": "C", "hint": "Nerve sensitization sign[cite: 4]."},
+        {"q": "Warfarin + Ibuprofen?", "options": ["A) Safe", "B) Increase bleeding risk", "C) Recommended", "D) Cancel out"], "ans": "B", "hint": "Fatal GI hemorrhage risk[cite: 4]."},
+        {"q": "Reye's syndrome risk?", "options": ["A) Paracetamol", "B) Ibuprofen", "C) Aspirin", "D) Salt"], "ans": "C", "hint": "Viral infection trigger[cite: 4]."},
+        {"q": "Least responsive to OTC analgesics?", "options": ["A) Neuropathic pain", "B) Headache", "C) Dysmenorrhea", "D) Strain"], "ans": "A", "hint": "Needs prescription neuro-drugs[cite: 4]."},
+        {"q": "Safety netting purpose?", "options": ["A) Billing", "B) Knowing when to escalate care", "C) Selling more", "D) Returning boxes"], "ans": "B", "hint": "Action plan if treatment fails[cite: 4]."},
+        {"q": "Topical rubefacient mechanism?", "options": ["A) COX inhibition", "B) Counter-irritation", "C) Cartilage build", "D) Freezing"], "ans": "B", "hint": "Distracts the brain[cite: 4]."},
+        {"q": "Tension headache feel?", "options": ["A) Band-like pressure", "B) Migraine", "C) Neuralgia", "D) Tumor"], "ans": "A", "hint": "Stress-induced[cite: 4]."},
+        {"q": "First-line for Dysmenorrhea?", "options": ["A) Paracetamol", "B) NSAIDs", "C) Topical Diclofenac", "D) Glucosamine"], "ans": "B", "hint": "Inhibits uterine prostaglandins[cite: 4]."},
+        {"q": "Ulcer history safe option?", "options": ["A) Aspirin", "B) Ibuprofen", "C) Paracetamol", "D) Naproxen"], "ans": "C", "hint": "Non-gastric irritant[cite: 4]."},
+        {"q": "Danger of strong opioids?", "options": ["A) Hearing loss", "B) Dependence/Hyperalgesia", "C) Bone fracture", "D) Expensive"], "ans": "B", "hint": "Addiction risk[cite: 4]."},
+        {"q": "Central sensitization is:", "options": ["A) Injury healing", "B) Nervous system high reactivity", "C) Muscle atrophy", "D) Acute transduction"], "ans": "B", "hint": "Wiring stays on high alert[cite: 4]."},
+        {"q": "Faces pain scale use?", "options": ["A) Exact dose", "B) Assess kids/cognitive barriers", "C) Causes", "D) Replacing SOCRATES"], "ans": "B", "hint": "Visual cues[cite: 4]."},
+        {"q": "Asthma and NSAIDs?", "options": ["A) Cancer", "B) Exacerbation risk", "C) Cure", "D) Pneumonia"], "ans": "B", "hint": "Aspirin-sensitive asthma[cite: 4]."},
+        {"q": "What do COX enzymes produce?", "options": ["A) Dopamine", "B) Prostaglandins", "C) Melatonin", "D) Adrenaline"], "ans": "B", "hint": "Inflammation mediators[cite: 4]."},
+        {"q": "What is the 'A' in TUNAFISH?", "options": ["A) Age >50", "B) Allergy", "C) Asthma", "D) Alcohol"], "ans": "A", "hint": "Increased malignancy risk[cite: 4]."},
+        {"q": "What is the 'F' in TUNAFISH?", "options": ["A) Fracture", "B) Fever", "C) Fatigue", "D) Food"], "ans": "B", "hint": "Possible infection[cite: 4]."},
+        {"q": "What is the 'N' in TUNAFISH?", "options": ["A) Numbness", "B) Neurologic symptoms", "C) Night pain", "D) Neck pain"], "ans": "B", "hint": "Red flag sign[cite: 4]."},
+        {"q": "What is the 'U' in TUNAFISH?", "options": ["A) Ulcer", "B) Unexplained weight loss", "C) Upset stomach", "D) Urine"], "ans": "B", "hint": "Malignancy sign[cite: 4]."},
+        {"q": "What is the primary goal of pain assessment?", "options": ["A) Sell meds", "B) Guide treatment or referral", "C) Record keeping", "D) Study"], "ans": "B", "hint": "Patient-centered outcome[cite: 4]."}
+    ];
+    let currentQ = 0, score = 0;
+    function render() {
+        if(currentQ >= questions.length) {
+            document.getElementById('q-box').innerHTML = `<h2>Finished! Score: ${score}/${questions.length}</h2><button class="btn" style="background:#2ecc71" onclick="location.reload()">Restart</button>`;
+            return;
+        }
+        const q = questions[currentQ];
+        document.getElementById('score').innerText = `Question ${currentQ + 1} / 50`;
+        let html = `<div class='question'>${q.q}</div><div class='options'>`;
+        q.options.forEach(opt => {
+            html += `<button class="opt" onclick="check('${opt[0]}', '${q.ans}', this)">${opt}</button>`;
+        });
+        html += `</div><button id="hintBtn" class="btn btn-hint" onclick="showHint()">💡 Show Hint</button><div class='hint' id='hint'>${q.hint}</div><button id="nextBtn" class="btn btn-next" onclick="next()">Next ➡️</button>`;
+        document.getElementById('q-box').innerHTML = html;
+    }
+    function check(choice, ans, btn) {
+        document.querySelectorAll('.opt').forEach(b => b.disabled = true);
+        if (choice === ans) { btn.classList.add('correct'); score++; } 
+        else { btn.classList.add('wrong'); document.querySelectorAll('.opt').forEach(b => { if(b.innerHTML[0] === ans) b.classList.add('correct'); }); }
+        document.getElementById('nextBtn').style.display = 'block';
+    }
+    function showHint() { document.getElementById('hint').style.display = 'block'; document.getElementById('hintBtn').disabled = true; }
+    function next() { currentQ++; render(); }
+    render();
+</script>
+</body>
+</html>

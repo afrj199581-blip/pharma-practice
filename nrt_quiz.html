@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NRT Quiz</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; padding: 15px; margin: 0; }
+        .quiz-container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { text-align: center; font-size: 1.4rem; color: #2c3e50; }
+        .question { font-size: 1.1rem; margin-bottom: 20px; color: #34495e; font-weight: bold; }
+        .options button { display: block; width: 100%; margin: 8px 0; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1rem; background: #fff; text-align: left; }
+        .correct { background-color: #2ecc71 !important; color: white; border-color: #27ae60 !important; }
+        .wrong { background-color: #e74c3c !important; color: white; border-color: #c0392b !important; }
+        .hint { margin-top: 15px; color: #856404; background: #fff3cd; padding: 12px; border-radius: 8px; display: none; font-size: 0.9rem; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; font-size: 1rem; margin-top: 10px; }
+        #hintBtn { background: #f39c12; }
+        #nextBtn { background: #3498db; display: none; }
+        #score { text-align: center; font-weight: bold; margin-bottom: 10px; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+<div class="quiz-container">
+    <h1>NRT Quiz</h1>
+    <div id="score">Question 1 / 50</div>
+    <div id="q-box"></div>
+</div>
+<script>
+    const questions = [
+        {"q": "What is the primary objective of NRT?", "options": ["A) Cause aversion", "B) Block dopamine", "C) Replace all effects", "D) Controlled nicotine delivery"], "ans": "D", "hint": "Provides nicotine without toxins[cite: 1]."},
+        {"q": "NRT lacks which harmful components?", "options": ["A) Nicotine", "B) Tar and Carbon Monoxide", "C) Menthol", "D) Dopamine"], "ans": "B", "hint": "Removes carcinogenic toxins[cite: 1]."},
+        {"q": "How does NRT delivery differ from smoking?", "options": ["A) Faster spikes", "B) Steady, lower doses", "C) Bypasses blood", "D) Only works while sleeping"], "ans": "B", "hint": "Prevents rapid spikes[cite: 1]."},
+        {"q": "Which product is 'long-acting'?", "options": ["A) Gum", "B) Patch", "C) Inhaler", "D) Nasal spray"], "ans": "B", "hint": "Applied once daily[cite: 1]."},
+        {"q": "Patch duration?", "options": ["A) 4 hours", "B) 10 hours", "C) 16-24 hours", "D) 72 hours"], "ans": "C", "hint": "Prevents morning withdrawal[cite: 1]."},
+        {"q": "Short-acting form for sudden cravings?", "options": ["A) Patch", "B) Gum/Lozenge", "C) Behavioral", "D) Bupropion"], "ans": "B", "hint": "Quick rescue[cite: 1]."},
+        {"q": "What is 'Chew and Park'?", "options": ["A) Lozenge technique", "B) Gum technique", "C) Inhaler", "D) Patch"], "ans": "B", "hint": "Buccal absorption[cite: 1]."},
+        {"q": "Why park nicotine gum?", "options": ["A) Taste", "B) Prevent stomach distress", "C) Save money", "D) Dental health"], "ans": "B", "hint": "Nicotine irritates the stomach[cite: 1]."},
+        {"q": "Best short-acting for dentures?", "options": ["A) Gum", "B) Patch", "C) Lozenge", "D) Inhaler"], "ans": "C", "hint": "Dissolves passively[cite: 1]."},
+        {"q": "How to use lozenges?", "options": ["A) Swallow", "B) Chew", "C) Dissolve slowly", "D) Crush"], "ans": "C", "hint": "Mucosal absorption[cite: 1]."},
+        {"q": "Which mimics hand-to-mouth action?", "options": ["A) Inhaler", "B) Patch", "C) Lozenge", "D) Spray"], "ans": "A", "hint": "Looks like a cigarette[cite: 1]."},
+        {"q": "Common inhaler side effect?", "options": ["A) Constipation", "B) Mouth/throat irritation", "C) Blindness", "D) Spasms"], "ans": "B", "hint": "Vapor hits throat[cite: 1]."},
+        {"q": "Fastest nicotine delivery?", "options": ["A) Gum", "B) Lozenge", "C) Nasal spray", "D) Patch"], "ans": "C", "hint": "Vascular nasal mucosa[cite: 1]."},
+        {"q": "Avoid what while using nasal spray?", "options": ["A) Sitting", "B) Sniffing/swallowing", "C) Breathing", "D) Eyes open"], "ans": "B", "hint": "Irritates throat[cite: 1]."},
+        {"q": "Wait time after nasal spray?", "options": ["A) 2-3 minutes", "B) 30s", "C) 1 hour", "D) 24h"], "ans": "A", "hint": "Absorption time[cite: 1]."},
+        {"q": "Heavy smoker approach?", "options": ["A) Gum only", "B) Combination Therapy", "C) Patch only", "D) Cold turkey"], "ans": "B", "hint": "Baseline + Rescue[cite: 1]."},
+        {"q": "Combination therapy consists of?", "options": ["A) Two patches", "B) Two gums", "C) Patch + Short-acting form", "D) NRT + Smoking"], "ans": "C", "hint": "Covers needs[cite: 1]."},
+        {"q": "Why combo therapy?", "options": ["A) Hair loss", "B) No effort", "C) Craving control", "D) Cheaper"], "ans": "C", "hint": "Handles steady + spikes[cite: 1]."},
+        {"q": "Light smoker (<10 cigs/day)?", "options": ["A) Short-acting only", "B) High dose patch", "C) Combo", "D) Rx only"], "ans": "A", "hint": "Lower baseline addiction[cite: 1]."},
+        {"q": "NRT success compared to placebo?", "options": ["A) 10%", "B) 50-70%", "C) 5%", "D) 90%"], "ans": "B", "hint": "Massive boost[cite: 1]."},
+        {"q": "Maximized effectiveness with?", "options": ["A) Caffeine", "B) Isolation", "C) Behavioral support", "D) Diet"], "ans": "C", "hint": "Psychological battle[cite: 1]."},
+        {"q": "Common patch side effect?", "options": ["A) Burns", "B) Skin irritation", "C) Frostbite", "D) Discoloration"], "ans": "B", "hint": "Adhesive/drug effect[cite: 1]."},
+        {"q": "Avoid patch irritation?", "options": ["A) Rotate sites", "B) Lotion", "C) Same spot", "D) Scrub"], "ans": "A", "hint": "Give skin a break[cite: 1]."},
+        {"q": "Nicotine blood level time?", "options": ["A) 1min", "B) 10min", "C) 30min-3hrs", "D) 24h"], "ans": "C", "hint": "Transdermal is slow[cite: 1]."},
+        {"q": "Heartburn/hiccups with gum?", "options": ["A) Patch mix", "B) Swallowing saliva", "C) Allergy", "D) Expired"], "ans": "B", "hint": "Chew and park error[cite: 1]."},
+        {"q": "Avoid before oral NRT?", "options": ["A) Water", "B) Acidic drinks", "C) Dairy", "D) Vits"], "ans": "B", "hint": "pH affects absorption[cite: 1]."},
+        {"q": "Why avoid acidic drinks?", "options": ["A) Stain teeth", "B) Prevent absorption", "C) Dissolve gum", "D) Explosion"], "ans": "B", "hint": "Nicotine needs alkaline environment[cite: 1]."},
+        {"q": "Smoking while patched risk?", "options": ["A) Overdose/toxicity", "B) Cancel out", "C) Color", "D) Arrest"], "ans": "A", "hint": "Doubling up[cite: 1]."},
+        {"q": "Course duration?", "options": ["A) 1 week", "B) 8-12 weeks", "C) 3 days", "D) 2 years"], "ans": "B", "hint": "Brain rewiring time[cite: 1]."},
+        {"q": "Discontinuing NRT?", "options": ["A) Abrupt", "B) Tapering", "C) Switch", "D) Higher dose"], "ans": "B", "hint": "Weaning prevents relapse[cite: 1]."},
+        {"q": "OTC NRT?", "options": ["A) Spray", "B) Bupropion", "C) Patches/Gums/Lozenges", "D) 2mg gum only"], "ans": "C", "hint": "Highly accessible forms[cite: 1]."},
+        {"q": "Rx only NRT?", "options": ["A) Inhalers/Sprays", "B) Patches", "C) Lozenges", "D) 4mg gum"], "ans": "A", "hint": "Closer supervision[cite: 1]."},
+        {"q": "Best patch area?", "options": ["A) Soles", "B) Clean, dry, hair-free upper body", "C) Heart", "D) Face"], "ans": "B", "hint": "Optimal absorption[cite: 1]."},
+        {"q": "Crunching lozenge side effect?", "options": ["A) Rash", "B) Rhinitis", "C) Heartburn", "D) Sleepiness"], "ans": "C", "hint": "Swallowing nicotine[cite: 1]."},
+        {"q": "Inhaler usage?", "options": ["A) Hourly", "B) Daily", "C) Continuous puffing", "D) Deep breath only"], "ans": "C", "hint": "Requires work[cite: 1]."},
+        {"q": "Primary inhaler side effect?", "options": ["A) Patch", "B) Mouth/throat irritation", "C) Gum", "D) Spray"], "ans": "B", "hint": "Vapor hit[cite: 1]."},
+        {"q": "Break which addiction?", "options": ["A) Physical", "B) Cost", "C) Social", "D) Lung"], "ans": "A", "hint": "Treats withdrawal[cite: 1]."},
+        {"q": "Cigarettes spike?", "options": ["A) Cortisol", "B) Melatonin", "C) Dopamine", "D) Adrenaline"], "ans": "C", "hint": "Reward chemical[cite: 1]."},
+        {"q": "Caution group?", "options": ["A) Allergies", "B) Pregnant/Heart attack history", "C) Weight", "D) Age"], "ans": "B", "hint": "Vasoconstrictor/Fetal impact[cite: 1]."},
+        {"q": "Vivid dreams advice?", "options": ["A) Double dose", "B) Remove patch at night", "C) Chew tobacco", "D) Pills"], "ans": "B", "hint": "REM sleep[cite: 1]."},
+        {"q": "Continuous crave control?", "options": ["A) Inhaler", "B) Spray", "C) Patch", "D) Lozenge"], "ans": "C", "hint": "Forget-about-it control[cite: 1]."},
+        {"q": "Heavy smoker rescue?", "options": ["A) Smoke", "B) Patch x3", "C) None", "D) Short-acting addition"], "ans": "D", "hint": "Situational spikes[cite: 1]."},
+        {"q": "Buccal absorption NRT?", "options": ["A) Patches", "B) Inhalers", "C) Gum/Lozenge", "D) Spray"], "ans": "C", "hint": "Cheeks/mouth[cite: 1]."},
+        {"q": "Taste stops in gum?", "options": ["A) Spit", "B) Chew slow/Park", "C) Swallow", "D) Drink"], "ans": "B", "hint": "Release more[cite: 1]."},
+        {"q": "Lung health improvement?", "options": ["A) Removes tar/CO", "B) Rebuilds", "C) Antibiotic", "D) Stop cough"], "ans": "A", "hint": "No combustion[cite: 1]."},
+        {"q": "Swallow lozenge outcome?", "options": ["A) Fast", "B) Swell", "C) Patch effect", "D) Poor absorption/Nausea"], "ans": "D", "hint": "GI hostile[cite: 1]."},
+        {"q": "Short-acting?", "options": ["A) Patch", "B) 4mg Gum", "C) Bupropion", "D) Varenicline"], "ans": "B", "hint": "Works in 20-30m[cite: 1]."},
+        {"q": "Pediatric/Weight-based?", "options": ["A) Seniors", "B) Men", "C) Children/Adolescents", "D) Women"], "ans": "C", "hint": "Development issues[cite: 1]."},
+        {"q": "Tapering goal?", "options": ["A) Sickness", "B) Tolerance", "C) Nicotine-free", "D) Switch"], "ans": "C", "hint": "Weaning off[cite: 1]."},
+        {"q": "NRT effect?", "options": ["A) Cure", "B) Treat withdrawal", "C) Bad", "D) Fake"], "ans": "B", "hint": "Bridge to quitting[cite: 1]."}
+    ];
+    let currentQ = 0, score = 0;
+    function render() {
+        if(currentQ >= questions.length) { document.getElementById('q-box').innerHTML = `<h3>Score: ${score}/${questions.length}</h3><button class="btn" onclick="location.reload()">Restart</button>`; return; }
+        const q = questions[currentQ];
+        document.getElementById('score').innerText = `Question ${currentQ + 1} / 50`;
+        let h = `<div class='question'>${q.q}</div><div class='options'>`;
+        q.options.forEach(o => h += `<button class='opt' onclick="check('${o[0]}', '${q.ans}', this)">${o}</button>`);
+        h += `</div><button class='btn' id='hintBtn' onclick="hint()">💡 Hint</button><div class='hint' id='h'>${q.hint}</div><button class='btn' id='nextBtn' onclick="next()">Next ➡️</button>`;
+        document.getElementById('q-box').innerHTML = h;
+    }
+    function check(choice, ans, btn) {
+        document.querySelectorAll('.opt').forEach(b => b.disabled = true);
+        if(choice==ans) { btn.classList.add('correct'); score++; } else { btn.classList.add('wrong'); document.querySelectorAll('.opt').forEach(b => { if(b.innerHTML[0] == ans) b.classList.add('correct'); }); }
+        document.getElementById('nextBtn').style.display = 'block';
+    }
+    function hint() { document.getElementById('h').style.display='block'; document.getElementById('hintBtn').disabled = true; }
+    function next() { currentQ++; render(); }
+    render();
+</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insomnia & Nausea Quiz</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; padding: 15px; margin: 0; }
+        .quiz-container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { text-align: center; font-size: 1.4rem; color: #2c3e50; }
+        .question { font-size: 1.1rem; margin-bottom: 20px; color: #34495e; font-weight: bold; }
+        .options button { display: block; width: 100%; margin: 8px 0; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1rem; background: #fff; text-align: left; }
+        .correct { background-color: #2ecc71 !important; color: white; border-color: #27ae60 !important; }
+        .wrong { background-color: #e74c3c !important; color: white; border-color: #c0392b !important; }
+        .hint { margin-top: 15px; color: #856404; background: #fff3cd; padding: 12px; border-radius: 8px; display: none; font-size: 0.9rem; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; font-size: 1rem; margin-top: 10px; }
+        #hintBtn { background: #f39c12; }
+        #nextBtn { background: #3498db; display: none; }
+        #score { text-align: center; font-weight: bold; margin-bottom: 10px; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+<div class="quiz-container">
+    <h1>Insomnia & Nausea Quiz</h1>
+    <div id="score">Question 1 / 50</div>
+    <div id="q-box"></div>
+</div>
+<script>
+    const questions = [
+        {"q": "What is the primary objective of a pharmacy triage approach for managing new symptoms?", "options": ["A) Immediate surgery", "B) Differentiate mild cases from severe pathology", "C) Definitive diagnosis", "D) Blood tests"], "ans": "B", "hint": "Pharmacist filters high-risk scenarios[cite: 1]."},
+        {"q": "Which age group for a child with new-onset unexplained vomiting warrants immediate medical referral?", "options": ["A) Neonates (< 1 month)", "B) Infants after 24 hours", "C) Children", "D) Adolescents"], "ans": "A", "hint": "Neonatal vomiting indicates critical issues[cite: 1]."},
+        {"q": "How long should vomiting continue in a stable infant before referring?", "options": ["A) 6 hours", "B) 12 hours", "C) 24 hours", "D) 48 hours"], "ans": "C", "hint": "Stable infants tolerate short periods[cite: 1]."},
+        {"q": "Which sleep pattern is diagnostic for anxiety?", "options": ["A) Early awakening", "B) Difficulty falling asleep", "C) Oversleeping", "D) Nightmares"], "ans": "B", "hint": "A busy mind struggles to initiate sleep[cite: 1]."},
+        {"q": "Which sleep pattern is associated with depression?", "options": ["A) Early morning awakening", "B) Difficulty falling asleep", "C) Nightmares", "D) Sleepwalking"], "ans": "A", "hint": "Related to serotonin/neurotransmitters[cite: 1]."},
+        {"q": "Classification of 'chronic' insomnia?", "options": ["A) 1 week", "B) 2 weeks", "C) 1 month", "D) > 4 weeks"], "ans": "D", "hint": "Sustained insomnia indicates chronic pattern[cite: 1]."},
+        {"q": "Which geriatric patient with vomiting requires urgent referral?", "options": ["A) Stable vitals", "B) Mild vomiting", "C) Signs of severe dehydration", "D) Known food trigger"], "ans": "C", "hint": "Dehydration leads to critical complications[cite: 1]."},
+        {"q": "Red flag for vomiting + severe abdominal pain?", "options": ["A) Simple food poisoning", "B) Acute abdomen", "C) Morning sickness", "D) Motion sickness"], "ans": "B", "hint": "Highly suspicious of surgical emergencies[cite: 1]."},
+        {"q": "Why is 'Projectile Vomiting' in neonates an emergency?", "options": ["A) Normal reflex", "B) Suggests Pyloric Stenosis", "C) Teething", "D) Overfeeding"], "ans": "B", "hint": "Muscular blockage at stomach exit[cite: 1]."},
+        {"q": "Appropriate stance for teen (16-18) insomnia?", "options": ["A) Strong Rx", "B) Caffeine", "C) Do not provide OTC sedatives; refer", "D) Child antihistamine"], "ans": "C", "hint": "Insomnia in teens is complex[cite: 1]."},
+        {"q": "Mechanism of 1st-gen OTC sleep aids?", "options": ["A) H1-histamine receptor block", "B) Dopamine block", "C) Serotonin block", "D) Cholinergic block"], "ans": "A", "hint": "Potent antihistamines[cite: 1]."},
+        {"q": "Strongest central H1 antagonist OTC?", "options": ["A) Valerian", "B) Diphenhydramine", "C) Melatonin", "D) Doxylamine"], "ans": "B", "hint": "Leading agent in sedatives[cite: 1]."},
+        {"q": "Prescription drug blocking orexin receptors?", "options": ["A) Z-drugs", "B) Benzodiazepines", "C) Dual Orexin Receptor Antagonists", "D) Melatonin"], "ans": "C", "hint": "Shuts off wake signal[cite: 1]."},
+        {"q": "Gold standard for chronic insomnia?", "options": ["A) Z-drugs", "B) CBT-I", "C) Diphenhydramine", "D) Melatonin"], "ans": "B", "hint": "Behavioral restructuring[cite: 1]."},
+        {"q": "First-line approach for child N&V?", "options": ["A) Anti-emetics", "B) Oral Rehydration Therapy", "C) Pain meds", "D) Referral"], "ans": "B", "hint": "Replacing fluids is critical[cite: 1]."},
+        {"q": "OTC analgesic risk of Reye's?", "options": ["A) Paracetamol", "B) Bismuth subsalicylate", "C) Ibuprofen", "D) Naproxen"], "ans": "B", "hint": "Specific to salicylate derivatives[cite: 1]."},
+        {"q": "Drug inducing both insomnia and nausea?", "options": ["A) SSRIs", "B) Beta-blockers", "C) Corticosteroids", "D) Statins"], "ans": "A", "hint": "Affects brain and GI tract[cite: 1]."},
+        {"q": "Why avoid Diphenhydramine in elderly?", "options": ["A) No efficacy", "B) Alertness", "C) Antimuscarinic side effects", "D) Addiction"], "ans": "C", "hint": "Causes dizziness, falls, confusion[cite: 1]."},
+        {"q": "Counsel against Diphenhydramine in?", "options": ["A) Melatonin", "B) BPH or glaucoma", "C) Valerian", "D) Anxiety"], "ans": "B", "hint": "Worsens urinary retention/glaucoma[cite: 1]."},
+        {"q": "OTC class for motion sickness?", "options": ["A) Bismuth", "B) Antihistamines", "C) Dopamine antagonists", "D) Ginger"], "ans": "B", "hint": "Blocks vestibular pathways[cite: 1]."},
+        {"q": "Sleep hygiene key advice?", "options": ["A) TV background", "B) Consistent schedule", "C) Coffee", "D) Bed for eating"], "ans": "B", "hint": "Circadian rhythm thrives on routine[cite: 1]."},
+        {"q": "Screen time rule?", "options": ["A) Avoid 1-2 hours before bed", "B) Watch TV", "C) Phones", "D) Unrelated"], "ans": "A", "hint": "Blue light suppresses melatonin[cite: 1]."},
+        {"q": "OTC gut anti-inflammatory?", "options": ["A) Bismuth subsalicylate", "B) Diphenhydramine", "C) Meclizine", "D) Ondansetron"], "ans": "A", "hint": "Salicylate component[cite: 1]."},
+        {"q": "NRT patch rotation?", "options": ["A) Weekly", "B) Daily", "C) Box", "D) Never"], "ans": "B", "hint": "Prevents skin irritation[cite: 1]."},
+        {"q": "5-HT3 receptor area?", "options": ["A) D2", "B) Muscarinic", "C) Serotonin 5-HT3", "D) Histamine-1"], "ans": "C", "hint": "Drivers of severe N&V[cite: 1]."},
+        {"q": "Timeline for referral for N&V?", "options": ["A) Sudden unprovoked onset", "B) 24 hours child", "C) 1 week", "D) Never"], "ans": "A", "hint": "Must be evaluated medically[cite: 1]."},
+        {"q": "Strict migraine N&V OTC?", "options": ["A) Prochlorperazine", "B) Domperidone", "C) Ondansetron", "D) Promethazine"], "ans": "A", "hint": "Only for pre-diagnosed headache[cite: 1]."},
+        {"q": "Domperidone restriction reason?", "options": ["A) Stopped working", "B) Cardiac risks", "C) Liver failure", "D) Addiction"], "ans": "B", "hint": "QT prolongation[cite: 1]."},
+        {"q": "Goal of behavioral insomnia treatment?", "options": ["A) Durable skills", "B) Dependence", "C) Routine help", "D) Temporary"], "ans": "A", "hint": "Fixes underlying issues[cite: 1]."},
+        {"q": "Referral for insomnia >4 weeks?", "options": ["A) Mild", "B) Primary", "C) Chronic medical review", "D) Sleep debt"], "ans": "C", "hint": "Guideline timeline[cite: 1]."},
+        {"q": "Iatrogenic cause check?", "options": ["A) Asthma", "B) Medication list", "C) HBP", "D) Diabetes"], "ans": "B", "hint": "Check SSRIs, opiates, theophylline[cite: 1]."},
+        {"q": "Herbal nausea remedy?", "options": ["A) Ginger", "B) Melatonin", "C) Valerian", "D) Peppermint"], "ans": "A", "hint": "Culinary root[cite: 1]."},
+        {"q": "Prochlorperazine mechanism?", "options": ["A) H1", "B) Muscarinic", "C) Central Dopamine-2", "D) Prokinetic"], "ans": "C", "hint": "Dampens CTZ area[cite: 1]."},
+        {"q": "Diphenhydramine fall risk?", "options": ["A) Renal", "B) Cardiac", "C) Hip fracture", "D) Stroke"], "ans": "C", "hint": "Triad of confusion/sedation[cite: 1]."},
+        {"q": "Red flag abdominal pain + vomiting?", "options": ["A) Gastroenteritis", "B) Appendicitis/Obstruction", "C) Morning sickness", "D) Allergy"], "ans": "B", "hint": "Surgical emergency[cite: 1]."},
+        {"q": "Motion sickness OTC (less sedating)?", "options": ["A) Diphenhydramine", "B) Meclizine", "C) Dimenhydrinate", "D) Bismuth"], "ans": "B", "hint": "Superior side effect profile[cite: 1]."},
+        {"q": "Child vomiting protocol?", "options": ["A) Small frequent amounts", "B) 24 hours wait", "C) Large cup", "D) Wait for doctor"], "ans": "A", "hint": "Promotes gut retention[cite: 1]."},
+        {"q": "Triage Golden Rule?", "options": ["A) Drug history", "B) Sell strongest", "C) Prescribe", "D) Wait"], "ans": "A", "hint": "Screen medication list[cite: 1]."},
+        {"q": "NOT an iatrogenic cause of insomnia?", "options": ["A) Theophylline", "B) Paracetamol", "C) Decongestants", "D) SSRIs"], "ans": "B", "hint": "Safe for sleep[cite: 1]."},
+        {"q": "Z-drug mechanism?", "options": ["A) GABA subunit specific", "B) Orexin block", "C) Serotonin", "D) Safe"], "ans": "A", "hint": "Selective GABA agonists[cite: 1]."},
+        {"q": "Gritty eye symptom?", "options": ["A) Glaucoma", "B) Dry Eye", "C) Cataracts", "D) Macular"], "ans": "B", "hint": "Reduced blinking[cite: 1]."},
+        {"q": "Oxymetazoline limit?", "options": ["A) 2 weeks", "B) 3-5 days", "C) Gone", "D) No limit"], "ans": "B", "hint": "Rebound congestion[cite: 1]."},
+        {"q": "Steroid nasal spray effectiveness?", "options": ["A) Minutes", "B) Hours", "C) 3-7 days", "D) 1 month"], "ans": "C", "hint": "Requires patience[cite: 1]."},
+        {"q": "Diphenhydramine (anticholinergic)?", "options": ["A) Melatonin", "B) Benadryl", "C) Valerian", "D) Montelukast"], "ans": "B", "hint": "1st-gen H1 antagonist[cite: 1]."},
+        {"q": "Healthy tympanic membrane?", "options": ["A) Pearly-gray", "B) Red/bulging", "C) Black", "D) Retracted"], "ans": "A", "hint": "Visual standard[cite: 1]."},
+        {"q": "Sudden hearing loss?", "options": ["A) Wait", "B) Refer", "C) OTC", "D) Antihistamine"], "ans": "B", "hint": "Medical emergency[cite: 1]."},
+        {"q": "Orexin receptor blocker?", "options": ["A) DORAs", "B) Z-drugs", "C) Benzodiazepines", "D) Melatonin"], "ans": "A", "hint": "Shut off wakefulness[cite: 1]."},
+        {"q": "Rhinitis worsens?", "options": ["A) Tuberculosis", "B) Hypertension", "C) Asthma", "D) Eczema"], "ans": "C", "hint": "Linked airways[cite: 1]."},
+        {"q": "Reye's syndrome?", "options": ["A) Food poisoning", "B) Salicylates", "C) Efficacy", "D) Hearing"], "ans": "B", "hint": "Viral recovery danger[cite: 1]."},
+        {"q": "Geriatric mild sleep aid?", "options": ["A) Diphenhydramine", "B) Low-dose Melatonin/short-acting Z-drug", "C) Benzodiazepines", "D) Doxylamine"], "ans": "B", "hint": "Minimizes anticholinergic burden[cite: 1]."}
+    ];
+    let currentQ = 0, score = 0;
+    function render() {
+        if(currentQ >= questions.length) {
+            document.getElementById('q-box').innerHTML = `<h2>Finished! Score: ${score}/${questions.length}</h2><button class="btn" style="background:#2ecc71" onclick="location.reload()">Restart</button>`;
+            return;
+        }
+        const q = questions[currentQ];
+        document.getElementById('score').innerText = `Question ${currentQ + 1} / 50`;
+        let html = `<div class='question'>${q.q}</div><div class='options'>`;
+        q.options.forEach(opt => {
+            html += `<button class="opt" onclick="check('${opt[0]}', '${q.ans}', this)">${opt}</button>`;
+        });
+        html += `</div><button id="hintBtn" class="btn btn-hint" onclick="showHint()">💡 Show Hint</button><div class='hint' id='hint'>${q.hint}</div><button id="nextBtn" class="btn btn-next" onclick="next()">Next ➡️</button>`;
+        document.getElementById('q-box').innerHTML = html;
+    }
+    function check(choice, ans, btn) {
+        document.querySelectorAll('.opt').forEach(b => b.disabled = true);
+        if (choice === ans) { btn.classList.add('correct'); score++; } 
+        else { btn.classList.add('wrong'); document.querySelectorAll('.opt').forEach(b => { if(b.innerHTML[0] === ans) b.classList.add('correct'); }); }
+        document.getElementById('nextBtn').style.display = 'block';
+    }
+    function showHint() { document.getElementById('hint').style.display = 'block'; document.getElementById('hintBtn').disabled = true; }
+    function next() { currentQ++; render(); }
+    render();
+</script>
+</body>
+</html>

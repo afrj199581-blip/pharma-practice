@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diarrhoea Management Quiz</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; padding: 15px; margin: 0; }
+        .quiz-container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { text-align: center; font-size: 1.4rem; color: #2c3e50; }
+        .question { font-size: 1.1rem; margin-bottom: 20px; color: #34495e; font-weight: bold; }
+        .options button { display: block; width: 100%; margin: 8px 0; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1rem; background: #fff; text-align: left; }
+        .correct { background-color: #2ecc71 !important; color: white; border-color: #27ae60 !important; }
+        .wrong { background-color: #e74c3c !important; color: white; border-color: #c0392b !important; }
+        .hint { margin-top: 15px; color: #856404; background: #fff3cd; padding: 12px; border-radius: 8px; display: none; font-size: 0.9rem; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; font-size: 1rem; margin-top: 10px; }
+        #hintBtn { background: #f39c12; }
+        #nextBtn { background: #3498db; display: none; }
+        #score { text-align: center; font-weight: bold; margin-bottom: 10px; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+<div class="quiz-container">
+    <h1>Diarrhoea Management Quiz</h1>
+    <div id="score">Question 1 / 50</div>
+    <div id="q-box"></div>
+</div>
+<script>
+    const questions = [
+        {"q": "How many loose stools daily defines diarrhoea?", "options": ["A) 1", "B) 2", "C) 3 or more", "D) 5"], "ans": "C", "hint": "Clinical definition[cite: 6]."},
+        {"q": "Acute diarrhoea duration is:", "options": ["A) < 14 days", "B) 14-28 days", "C) > 1 month", "D) > 3 months"], "ans": "A", "hint": "Most common timeline[cite: 6]."},
+        {"q": "Persistent diarrhoea duration is:", "options": ["A) < 14 days", "B) > 14 days", "C) 1 week", "D) 2 months"], "ans": "B", "hint": "Over 2 weeks[cite: 6]."},
+        {"q": "Most acute diarrhoea resolves in:", "options": ["A) 12-24h", "B) 2-4 days", "C) 1 week", "D) 1 month"], "ans": "B", "hint": "Self-limiting[cite: 6]."},
+        {"q": "Viral source (winter bug)?", "options": ["A) Salmonella", "B) Norovirus", "C) Shigella", "D) E. coli"], "ans": "B", "hint": "Highly contagious[cite: 6]."},
+        {"q": "Rotavirus vaccine age?", "options": ["A) Birth", "B) 2-3 months", "C) 1 year", "D) 5 years"], "ans": "B", "hint": "Early immunization[cite: 6]."},
+        {"q": "Primary danger of diarrhoea?", "options": ["A) Dehydration", "B) Weight gain", "C) Hypertension", "D) Pain"], "ans": "A", "hint": "Fluid loss[cite: 6]."},
+        {"q": "Moderate dehydration signs?", "options": ["A) Sunken eyes, dry mouth", "B) Weight gain", "C) Hypertension", "D) Sweating"], "ans": "A", "hint": "Clear deficit signs[cite: 6]."},
+        {"q": "Pinch test retraction time?", "options": ["A) Instant", "B) 1-2 seconds", "C) 10 seconds", "D) Never"], "ans": "B", "hint": "Sluggish skin[cite: 6]."},
+        {"q": "Referral for child diarrhoea?", "options": ["A) > 1 day", "B) > 3 days", "C) > 1 week", "D) 1 month"], "ans": "B", "hint": "Rapid deterioration[cite: 6]."},
+        {"q": "Red Flag: Blood/mucus indicates?", "options": ["A) Viral", "B) Dysentery", "C) Normal", "D) Mild"], "ans": "B", "hint": "Invasive infection[cite: 6]."},
+        {"q": "Referral for >40y habit change?", "options": ["A) Always", "B) Only if pain", "C) Never", "D) If <20y"], "ans": "A", "hint": "Rule out cancer[cite: 6]."},
+        {"q": "First-line Tx?", "options": ["A) Loperamide", "B) Antibiotics", "C) ORS", "D) Surgery"], "ans": "C", "hint": "Replenish salts[cite: 6]."},
+        {"q": "Loperamide mechanism?", "options": ["A) ORS replacement", "B) Slows gut movement", "C) Kills virus", "D) Pain relief"], "ans": "B", "hint": "The 'brake'[cite: 6]."},
+        {"q": "Loperamide age limit?", "options": ["A) < 1 year", "B) < 12 years", "C) < 18 years", "D) No limit"], "ans": "B", "hint": "Risk of paralysis[cite: 6]."},
+        {"q": "Loperamide max dose?", "options": ["A) 4mg", "B) 8mg", "C) 16mg", "D) 32mg"], "ans": "C", "hint": "Cardiac risk limit[cite: 6]."},
+        {"q": "When is Loperamide appropriate?", "options": ["A) Dysentery", "B) Social necessity", "C) Dehydration", "D) Fever"], "ans": "B", "hint": "Symptom control only[cite: 6]."},
+        {"q": "Rotavirus vaccine success?", "options": ["A) 20%", "B) 40%", "C) > 80% reduction", "D) 0%"], "ans": "C", "hint": "Highly effective[cite: 6]."},
+        {"q": "ORS ingredients?", "options": ["A) Glucose/Salts", "B) Antibiotics", "C) Laxatives", "D) Painkillers"], "ans": "A", "hint": "Co-transport[cite: 6]."},
+        {"q": "Is ORS safe for infants?", "options": ["A) No", "B) Yes, for all ages", "C) Only 1 year+", "D) Not advised"], "ans": "B", "hint": "Foundation for all[cite: 6]."},
+        {"q": "Traveler's diarrhoea referral?", "options": ["A) Immediate", "B) Wait 3 days", "C) Sell Loperamide", "D) Only fluids"], "ans": "A", "hint": "Exotic parasites[cite: 6]."},
+        {"q": "Dysentery + Loperamide?", "options": ["A) Mandatory", "B) Contraindicated", "C) Useful", "D) Safe"], "ans": "B", "hint": "Retains toxins[cite: 6]."},
+        {"q": "Chronic diarrhoea duration?", "options": ["A) 1 week", "B) 2 weeks", "C) > 1 month", "D) 3 days"], "ans": "C", "hint": "Long-term[cite: 6]."},
+        {"q": "Diarrhoea defined by consistency?", "options": ["A) Hard", "B) Soft", "C) Loose/Liquid", "D) Solid"], "ans": "C", "hint": "Consistency matters[cite: 6]."},
+        {"q": "Viral route?", "options": ["A) Contact/surfaces", "B) Air", "C) Blood", "D) Only food"], "ans": "A", "hint": "Highly contagious[cite: 6]."},
+        {"q": "Why ORS before Loperamide?", "options": ["A) Loperamide is toxic", "B) Hydration saves lives", "C) ORS tastes good", "D) Loperamide slows repair"], "ans": "B", "hint": "Priority[cite: 6]."},
+        {"q": "Diarrhoea red flag travel?", "options": ["A) Always", "B) Only if fever", "C) Never", "D) Depends"], "ans": "A", "hint": "Exotic bugs[cite: 6]."},
+        {"q": "Vomiting + inability to drink ORS?", "options": ["A) Wait", "B) Urgent referral", "C) Loperamide", "D) Home tx"], "ans": "B", "hint": "IV needed[cite: 6]."},
+        {"q": "IBS diarrhoea?", "options": ["A) Normal", "B) Common differential", "C) Cancer", "D) Viral"], "ans": "B", "hint": "Level 1 elimination[cite: 6]."},
+        {"q": "Ulcerative Colitis Red Flag?", "options": ["A) Viral", "B) Level 2 Sinister", "C) Common", "D) Drug effect"], "ans": "B", "hint": "Severe IBD[cite: 6]."},
+        {"q": "Vaccine intro UK year?", "options": ["A) 1995", "B) 2005", "C) 2013", "D) 2020"], "ans": "C", "hint": "Key milestone[cite: 6]."},
+        {"q": "Why is Loperamide NOT for children?", "options": ["A) Taste", "B) Paralytic ileus risk", "C) Cost", "D) Effectiveness"], "ans": "B", "hint": "Safety restriction[cite: 6]."},
+        {"q": "Can stress cause diarrhoea?", "options": ["A) Yes (IBS link)", "B) No", "C) Only in adults", "D) Never"], "ans": "A", "hint": "Psychological link[cite: 6]."},
+        {"q": "What is the pinch test?", "options": ["A) Hydration check", "B) Pain check", "C) Reflex check", "D) Wax check"], "ans": "A", "hint": "Skin elasticity[cite: 6]."},
+        {"q": "Are probiotics 1st line?", "options": ["A) Always", "B) No, ORS is", "C) Yes", "D) Only if blood"], "ans": "B", "hint": "Supporting, not main[cite: 6]."},
+        {"q": "Common bacteria?", "options": ["A) Shigella", "B) Salmonella/E.Coli", "C) All", "D) Norovirus"], "ans": "B", "hint": "Contaminated food[cite: 6]."},
+        {"q": "Can viral infect lower intestine?", "options": ["A) Yes", "B) No", "C) Rarely", "D) Depends"], "ans": "A", "hint": "Gut damage[cite: 6]."},
+        {"q": "Why assess history?", "options": ["A) Timeframe", "B) Cost", "C) Age", "D) All"], "ans": "D", "hint": "Holistic view[cite: 6]."},
+        {"q": "If >4 days adult referral?", "options": ["A) Yes", "B) No", "C) Wait 1 week", "D) Only if sick"], "ans": "A", "hint": "Guideline limit[cite: 6]."},
+        {"q": "Is dysentery OTC treatable?", "options": ["A) Yes", "B) No (Refer)", "C) Maybe", "D) Only Loperamide"], "ans": "B", "hint": "Red flag[cite: 6]."},
+        {"q": "Faecal impaction vs diarrhoea?", "options": ["A) Same", "B) Overflow diarrhoea", "C) Not possible", "D) Different"], "ans": "B", "hint": "Hard blockages[cite: 6]."},
+        {"q": "Why ORS co-transport?", "options": ["A) Faster absorption", "B) Better taste", "C) Stability", "D) Color"], "ans": "A", "hint": "Sodium/glucose[cite: 6]."},
+        {"q": "Infant feeding with diarrhoea?", "options": ["A) Stop", "B) Continue/ORS", "C) Water only", "D) Tea"], "ans": "B", "hint": "Maintain nutrition[cite: 6]."},
+        {"q": "Is blood normal with ORS?", "options": ["A) Yes", "B) No", "C) Sometimes", "D) Only in adults"], "ans": "B", "hint": "Dysentery[cite: 6]."},
+        {"q": "Traveler risk?", "options": ["A) Parasites", "B) Normal", "C) Low", "D) None"], "ans": "A", "hint": "High risk[cite: 6]."},
+        {"q": "Triage step 1?", "options": ["A) Identify cause", "B) Sell", "C) Prescribe", "D) Wait"], "ans": "A", "hint": "Diagnostic mindset[cite: 6]."},
+        {"q": "Triage step 2?", "options": ["A) Dehydration risk", "B) Sell", "C) Prescribe", "D) Wait"], "ans": "A", "hint": "Safety assessment[cite: 6]."},
+        {"q": "Triage step 3?", "options": ["A) Red flags", "B) Sell", "C) Prescribe", "D) Wait"], "ans": "A", "hint": "Filtering danger[cite: 6]."},
+        {"q": "Is 3-4 soft stools per day diarrhoea?", "options": ["A) Yes", "B) No", "C) Depends on pain", "D) Only if watery"], "ans": "A", "hint": "Met the threshold[cite: 6]."},
+        {"q": "Loperamide limit 16mg?", "options": ["A) Safety", "B) Cost", "C) Taste", "D) Not needed"], "ans": "A", "hint": "Toxicity limit[cite: 6]."}
+    ];
+    let qIdx = 0, score = 0;
+    function render() {
+        if(qIdx >= questions.length) { document.getElementById('q-box').innerHTML = `<h3>Score: ${score}/${questions.length}</h3><button class="btn" onclick="location.reload()">Restart</button>`; return; }
+        const q = questions[qIdx];
+        document.getElementById('score').innerText = `Q ${qIdx + 1} / 50`;
+        let h = `<div class='question'>${q.q}</div><div class='options'>`;
+        q.options.forEach(o => h += `<button class='opt' onclick="check('${o[0]}', '${q.ans}', this)">${o}</button>`);
+        h += `</div><button class='btn' id='hintBtn' onclick="hint()">💡 Hint</button><div class='hint' id='h'>${q.hint}</div><button class='btn' id='nextBtn' onclick="next()">Next ➡️</button>`;
+        document.getElementById('q-box').innerHTML = h;
+    }
+    function check(c, a, btn) {
+        document.querySelectorAll('.opt').forEach(b => b.disabled = true);
+        if(c==a) { btn.classList.add('correct'); score++; } else { btn.classList.add('wrong'); document.querySelectorAll('.opt').forEach(b => { if(b.innerHTML[0] === a) b.classList.add('correct'); }); }
+        document.getElementById('nextBtn').style.display = 'block';
+    }
+    function hint() { document.getElementById('h').style.display='block'; document.getElementById('hintBtn').disabled = true; }
+    function next() { qIdx++; render(); }
+    render();
+</script>
+</body>
+</html>

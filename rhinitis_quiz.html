@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rhinitis Management Quiz</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; padding: 15px; margin: 0; }
+        .quiz-container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { text-align: center; font-size: 1.4rem; color: #2c3e50; }
+        .question { font-size: 1.1rem; margin-bottom: 20px; color: #34495e; font-weight: bold; }
+        .options button { display: block; width: 100%; margin: 8px 0; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1rem; background: #fff; text-align: left; }
+        .correct { background-color: #2ecc71 !important; color: white; border-color: #27ae60 !important; }
+        .wrong { background-color: #e74c3c !important; color: white; border-color: #c0392b !important; }
+        .hint { margin-top: 15px; color: #856404; background: #fff3cd; padding: 12px; border-radius: 8px; display: none; font-size: 0.9rem; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; font-size: 1rem; margin-top: 10px; }
+        #hintBtn { background: #f39c12; }
+        #nextBtn { background: #3498db; display: none; }
+        #score { text-align: center; font-weight: bold; margin-bottom: 10px; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+<div class="quiz-container">
+    <h1>Rhinitis Quiz</h1>
+    <div id="score">Question 1 / 50</div>
+    <div id="q-box"></div>
+</div>
+<script>
+    const questions = [
+        {"q": "What is the simplest definition of rhinitis?", "options": ["A) Inflammation of nasal membrane", "B) Bacterial lung infection", "C) Nasal polyps", "D) Throat fungus"], "ans": "A", "hint": "It is a chronic inflammatory airway disease[cite: 7]."},
+        {"q": "Which is NOT one of the 4 classic rhinitis symptoms?", "options": ["A) Sneezing", "B) High fever", "C) Nasal congestion", "D) Rhinorrhea"], "ans": "B", "hint": "Fever is typical of systemic flu[cite: 7]."},
+        {"q": "Type 1 (Allergic Rhinitis) is mediated by?", "options": ["A) IgG", "B) IgM", "C) IgE", "D) IgA"], "ans": "C", "hint": "Sensitizes mast cells[cite: 7]."},
+        {"q": "Allergen for seasonal Hay fever?", "options": ["A) Dust mites", "B) Mold", "C) Pets", "D) Pollen/grasses"], "ans": "D", "hint": "Prominent seasonally[cite: 7]."},
+        {"q": "Type 2 Non-Allergic Rhinitis (NAR) lacks?", "options": ["A) Histamine involvement", "B) Nasal spray use", "C) Bacteria", "D) IgE"], "ans": "A", "hint": "Lacks the typical allergic pathway[cite: 7]."},
+        {"q": "Vasomotor rhinitis is triggered by?", "options": ["A) Spicy food", "B) Temp changes/smoke", "C) Pollen", "D) Viruses"], "ans": "B", "hint": "Nervous system hypersensitivity[cite: 7]."},
+        {"q": "Rhinitis from spicy food is?", "options": ["A) Vasomotor", "B) Infective", "C) Gustatory", "D) Medicamentosa"], "ans": "C", "hint": "Relates to taste/eating[cite: 7]."},
+        {"q": "Rhinitis medicamentosa is caused by?", "options": ["A) Antihistamines", "B) Steroids", "C) Saline", "D) Topical decongestants"], "ans": "D", "hint": "Rebound congestion[cite: 7]."},
+        {"q": "Reverse Rhinitis medicamentosa?", "options": ["A) Steroid + saline spray", "B) More decongestant", "C) Antibiotics", "D) Surgery"], "ans": "A", "hint": "Reduce inflammation safely[cite: 7]."},
+        {"q": "Infective rhinitis origin?", "options": ["A) Asthma", "B) Common cold", "C) Conjunctivitis", "D) Food"], "ans": "B", "hint": "Normally viral[cite: 7]."},
+        {"q": "Infective discharge appearance?", "options": ["A) Clear/watery", "B) Dry", "C) Mucopurulent", "D) Bloody"], "ans": "C", "hint": "Thick and colored[cite: 7]."},
+        {"q": "Sensitization phase produces?", "options": ["A) Eosinophils", "B) Leukotrienes", "C) Bradykinin", "D) Specific IgE"], "ans": "D", "hint": "Primes mast cells[cite: 7]."},
+        {"q": "Early-phase mediator?", "options": ["A) Histamine", "B) Serotonin", "C) Dopamine", "D) Melatonin"], "ans": "A", "hint": "Triggers immediate sneezing[cite: 7]."},
+        {"q": "NOT an early-phase symptom?", "options": ["A) Sneezing", "B) Stubborn congestion", "C) Itching", "D) Runny nose"], "ans": "B", "hint": "Develops in late phase[cite: 7]."},
+        {"q": "Late-phase infiltration cells?", "options": ["A) RBCs", "B) Platelets", "C) Eosinophils", "D) Neurons"], "ans": "C", "hint": "Shift to chronic inflammation[cite: 7]."},
+        {"q": "Nasal Hyper-reactivity means?", "options": ["A) Smell loss", "B) No mucus", "C) Food allergy", "D) Sensitive to triggers"], "ans": "D", "hint": "Lowered firing threshold[cite: 7]."},
+        {"q": "Late-phase vasodilator/congestion?", "options": ["A) Leukotrienes", "B) Cortisol", "C) Adrenaline", "D) Thyroxine"], "ans": "A", "hint": "Makes mucus viscous[cite: 7]."},
+        {"q": "Hyposmia means?", "options": ["A) Tearing", "B) Smell decrease", "C) Saliva", "D) Pain"], "ans": "B", "hint": "Decreased olfaction[cite: 7]."},
+        {"q": "Rhinitis complication?", "options": ["A) Blindness", "B) Meningitis", "C) Sinusitis", "D) Heart failure"], "ans": "C", "hint": "Blocked facial cavities[cite: 7]."},
+        {"q": "Otitis media cause in kids?", "options": ["A) Virus", "B) Eardrum snap", "C) Outer ear infection", "D) Eustachian tube block"], "ans": "D", "hint": "Fluid stagnation[cite: 7]."},
+        {"q": "Postnasal drip symptom?", "options": ["A) Hoarseness/Cough", "B) Polyps", "C) Conjunctivitis", "D) Otitis externa"], "ans": "A", "hint": "Throat irritation[cite: 7]."},
+        {"q": "Rhinitis worsens?", "options": ["A) Embolism", "B) Asthma", "C) TB", "D) Cystic fibrosis"], "ans": "B", "hint": "Both show eosinophilic inflammation[cite: 7]."},
+        {"q": "Nasal polyps cause?", "options": ["A) Deafness", "B) Eye bleed", "C) Breathing difficulty", "D) Nose hair"], "ans": "C", "hint": "Benign growths[cite: 7]."},
+        {"q": "Early-phase target receptor?", "options": ["A) Beta-1", "B) Alpha-2", "C) Serotonin", "D) H1"], "ans": "D", "hint": "Competitive antagonist[cite: 7]."},
+        {"q": "Preferred antihistamine gen?", "options": ["A) 2nd gen", "B) 1st gen", "C) 3rd gen", "D) 4th gen"], "ans": "A", "hint": "Non-sedating[cite: 7]."},
+        {"q": "Avoid 1st gen in elderly?", "options": ["A) Diarrhea", "B) Sedation/falls", "C) Sugar", "D) Hair loss"], "ans": "B", "hint": "Crosses Blood-Brain Barrier[cite: 7]."},
+        {"q": "OTC 2nd gen antihistamine?", "options": ["A) Pseudoephedrine", "B) Oxymetazoline", "C) Cetirizine", "D) Ipratropium"], "ans": "C", "hint": "24h relief[cite: 7]."},
+        {"q": "Azelastine advantage?", "options": ["A) Asthma cure", "B) Monthly oral", "C) Zero sides", "D) Rapid onset"], "ans": "D", "hint": "Local application[cite: 7]."},
+        {"q": "Cromolyn sodium limitation?", "options": ["A) Dosing frequency", "B) Sedation", "C) Toxicity", "D) Worsens"], "ans": "A", "hint": "3-4 times daily[cite: 7]."},
+        {"q": "Gold standard late-phase?", "options": ["A) Decongestants", "B) Intranasal Steroids", "C) Paracetamol", "D) Antibiotics"], "ans": "B", "hint": "Shuts down eosinophils[cite: 7]."},
+        {"q": "Steroid peak time?", "options": ["A) 15m", "B) 2h", "C) 3-7 days", "D) 1 month"], "ans": "C", "hint": "Not instant[cite: 7]."},
+        {"q": "OTC Intranasal steroid?", "options": ["A) Loratadine", "B) Cromolyn", "C) Azelastine", "D) Fluticasone"], "ans": "D", "hint": "Example: Flixonase[cite: 7]."},
+        {"q": "Montelukast class?", "options": ["A) LTRA", "B) Beta-blocker", "C) Antihistamine", "D) Steroid"], "ans": "A", "hint": "Prevents mediator binding[cite: 7]."},
+        {"q": "Montelukast concurrent condition?", "options": ["A) Hypertension", "B) Asthma", "C) Diabetes", "D) Eczema"], "ans": "B", "hint": "Targeting leukotrienes[cite: 7]."},
+        {"q": "Montelukast warning?", "options": ["A) Liver", "B) Heart", "C) Neuropsychiatric events", "D) Kidney"], "ans": "C", "hint": "Mood changes[cite: 7]."},
+        {"q": "Decongestant mechanism?", "options": ["A) H1 block", "B) Mast cell stabilize", "C) Vasodilation", "D) Vasoconstriction"], "ans": "D", "hint": "Sympathomimetic[cite: 7]."},
+        {"q": "Decongestant limit?", "options": ["A) 3-5 days", "B) 14 days", "C) 1 month", "D) Indefinite"], "ans": "A", "hint": "Rebound congestion[cite: 7]."},
+        {"q": "Intranasal dries nose?", "options": ["A) Fluticasone", "B) Azelastine", "C) Cetirizine", "D) Cromolyn"], "ans": "B", "hint": "Anticholinergic effect[cite: 7]."},
+        {"q": "Ipratropium bromide targets?", "options": ["A) Congestion", "B) Rhinorrhea", "C) Fever", "D) Sneezing"], "ans": "B", "hint": "Blocks mucus glands[cite: 7]."},
+        {"q": "Saline irrigation purpose?", "options": ["A) Antibacterial", "B) Numbing", "C) Steroid delivery", "D) Mucociliary clearance"], "ans": "D", "hint": "Physical wash[cite: 7]."},
+        {"q": "Hallmark AR symptom?", "options": ["A) Sneezing spells", "B) Fever", "C) Cough", "D) Facial pain"], "ans": "A", "hint": "Triggered by allergens[cite: 7]."},
+        {"q": "Perennial pattern?", "options": ["A) Seasonal", "B) Persistent indoor", "C) Gustatory", "D) Drug"], "ans": "B", "hint": "Always present[cite: 7]."},
+        {"q": "Cross-linking IgE result?", "options": ["A) Division", "B) Shrink", "C) Degranulation", "D) RBC"], "ans": "C", "hint": "Releases histamine[cite: 7]."},
+        {"q": "Vasomotor trigger?", "options": ["A) Infective", "B) Nervous sensitivity", "C) Anaphylaxis", "D) Asthma"], "ans": "B", "hint": "Nervous sensitivity[cite: 7]."},
+        {"q": "Infective vs Allergic?", "options": ["A) Texture/Color", "B) Clear", "C) Flower scent", "D) Nightly"], "ans": "A", "hint": "Pus indicates infection[cite: 7]."},
+        {"q": "Sinusitis complication?", "options": ["A) Polyps", "B) Acute sinusitis", "C) Otitis", "D) Glaucoma"], "ans": "B", "hint": "Infected facial cavities[cite: 7]."},
+        {"q": "Claritin generic?", "options": ["A) Fexofenadine", "B) Cetirizine", "C) Loratadine", "D) Diphen"], "ans": "C", "hint": "Non-sedating[cite: 7]."},
+        {"q": "Telfast generic?", "options": ["A) Loratadine", "B) Cetirizine", "C) Chlorphen", "D) Fexofenadine"], "ans": "D", "hint": "Non-sedating[cite: 7]."},
+        {"q": "Late-phase chemokine role?", "options": ["A) Filtration", "B) Recruitment", "C) Sensitization", "D) Remission"], "ans": "B", "hint": "Stubborn congestion[cite: 7]."},
+        {"q": "Rhinitis impact?", "options": ["A) Contagious", "B) Work/Sleep/Cognitive", "C) Surgery", "D) Blindness"], "ans": "B", "hint": "Life quality impairment[cite: 7]."}
+    ];
+    let qIdx = 0, score = 0;
+    function render() {
+        if(qIdx >= questions.length) { document.getElementById('q-box').innerHTML = `<h3>Score: ${score}/${questions.length}</h3><button class="btn" onclick="location.reload()">Restart</button>`; return; }
+        const q = questions[qIdx];
+        document.getElementById('score').innerText = `Question ${qIdx + 1} / 50`;
+        let h = `<div class='question'>${q.q}</div><div class='options'>`;
+        q.options.forEach(o => h += `<button class='opt' onclick="check('${o[0]}', '${q.ans}', this)">${o}</button>`);
+        h += `</div><button class='btn' id='hintBtn' onclick="hint()">💡 Hint</button><div class='hint' id='h'>${q.hint}</div><button class='btn' id='nextBtn' onclick="next()">Next ➡️</button>`;
+        document.getElementById('q-box').innerHTML = h;
+    }
+    function check(choice, ans, btn) {
+        document.querySelectorAll('.opt').forEach(b => b.disabled = true);
+        if(choice==ans) { btn.classList.add('correct'); score++; } else { btn.classList.add('wrong'); document.querySelectorAll('.opt').forEach(b => { if(b.innerHTML[0] == ans) b.classList.add('correct'); }); }
+        document.getElementById('nextBtn').style.display = 'block';
+    }
+    function hint() { document.getElementById('h').style.display='block'; document.getElementById('hintBtn').disabled = true; }
+    function next() { qIdx++; render(); }
+    render();
+</script>
+</body>
+</html>

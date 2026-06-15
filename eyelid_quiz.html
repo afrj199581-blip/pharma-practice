@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eyelid Disorders Quiz</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; padding: 15px; margin: 0; }
+        .quiz-container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { text-align: center; font-size: 1.5rem; color: #2c3e50; }
+        .question { font-size: 1.2rem; margin-bottom: 20px; color: #34495e; font-weight: bold; }
+        .options button { display: block; width: 100%; margin: 10px 0; padding: 15px; border: 1px solid #ccc; border-radius: 10px; cursor: pointer; font-size: 1rem; background: #fff; text-align: left; }
+        .correct { background-color: #2ecc71 !important; color: white; border-color: #27ae60 !important; }
+        .wrong { background-color: #e74c3c !important; color: white; border-color: #c0392b !important; }
+        .hint { margin-top: 15px; color: #856404; background: #fff3cd; padding: 15px; border-radius: 10px; display: none; font-size: 0.9rem; }
+        .controls { display: flex; gap: 10px; margin-top: 20px; }
+        .btn { flex: 1; padding: 15px; border: none; border-radius: 10px; cursor: pointer; font-weight: bold; color: white; font-size: 1rem; }
+        #hintBtn { background: #f39c12; }
+        #nextBtn { background: #3498db; display: none; }
+        #score { text-align: center; font-weight: bold; margin-bottom: 10px; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h1>Eyelid Disorders Quiz</h1>
+    <div id="score">Question 1 / 50</div>
+    <div id="q-box"></div>
+</div>
+
+<script>
+    const questions = [
+        {"q": "What is the most common bacteria responsible for localized eyelid infections?", "options": ["A) Streptococcus", "B) Staphylococcus", "C) Pseudomonas", "D) E. coli"], "ans": "B", "hint": "Starts with 'Staph'."},
+        {"q": "Which specific gland's obstruction is the primary cause of a chalazion?", "options": ["A) Lacrimal gland", "B) Sweat gland", "C) Meibomian gland", "D) Sebaceous cyst"], "ans": "C", "hint": "Produces the oily layer of the tear film."},
+        {"q": "Which of the following chronic skin conditions can frequently inflame the eyelids?", "options": ["A) Psoriasis", "B) Seborrhoeic dermatitis and Rosacea", "C) Vitiligo", "D) Melanoma"], "ans": "B", "hint": "Causes dandruff-like flakes and facial redness."},
+        {"q": "How does poor eyelid hygiene directly contribute to eyelid disorders?", "options": ["A) Increases pressure", "B) Decreases tears", "C) Increases microbial infection risk", "D) Causes astigmatism"], "ans": "C", "hint": "Allows pathogens to accumulate."},
+        {"q": "Why are contaminated cosmetics a risk factor?", "options": ["A) Allergic rhinitis", "B) Old makeup spreads microbes", "C) Blocks tear duct", "D) Changes eye color"], "ans": "B", "hint": "Sharing products spreads bacteria."},
+        {"q": "Which contact lens habit raises infection risk?", "options": ["A) Daily disposables", "B) Sterile saline", "C) Overnight wear", "D) 4 hours wear"], "ans": "C", "hint": "Sleeping with them traps bacteria."},
+        {"q": "Which systemic condition increases susceptibility to infections?", "options": ["A) Hypertension", "B) Asthma", "C) Diabetes", "D) Osteoporosis"], "ans": "C", "hint": "Poor wound healing, high blood sugar."},
+        {"q": "What type of symptom is 'crusting at the lid margin'?", "options": ["A) Sensory symptom", "B) Visual effect", "C) Systemic factor", "D) Local sign"], "ans": "D", "hint": "Physically observable sign."},
+        {"q": "Which describes a 'sensory' symptom?", "options": ["A) Redness", "B) Foreign-body sensation", "C) Swelling", "D) Lump"], "ans": "B", "hint": "What the patient feels."},
+        {"q": "Which is an absolute 'Red Flag'?", "options": ["A) Mild itching", "B) Watery discharge", "C) Blurred vision", "D) Crusting"], "ans": "C", "hint": "Compromises sight."},
+        {"q": "First step in pharmacy assessment?", "options": ["A) Microscope", "B) Patient history", "C) Prescribe", "D) Vision test"], "ans": "B", "hint": "History is priority."},
+        {"q": "Observation suggesting MGD?", "options": ["A) Pale conjunctiva", "B) Red lid margins, crusting", "C) Clear sclera", "D) Drooping lid"], "ans": "B", "hint": "Signs of blockage."},
+        {"q": "Core eyelid hygiene?", "options": ["A) Antibacterial soap", "B) Diluted baby shampoo", "C) Cornea scrub", "D) Alcohol"], "ans": "B", "hint": "Tear-free/gentle."},
+        {"q": "Duration for warm compresses?", "options": ["A) 1-2 min", "B) 10-15 min", "C) 30-45 min", "D) 60 min"], "ans": "B", "hint": "Enough time to melt oil."},
+        {"q": "Frequency for warm compresses?", "options": ["A) Weekly", "B) 2-4 times daily", "C) Once", "D) Every hour"], "ans": "B", "hint": "Consistency is key."},
+        {"q": "Primary goal of warm compresses?", "options": ["A) Freeze bacteria", "B) Open glands/reduce swelling", "C) Refraction", "D) Increase tears"], "ans": "B", "hint": "Liquefies trapped oils."},
+        {"q": "Avoid during active infection?", "options": ["A) Glasses", "B) Makeup/contacts", "C) Water", "D) Dark rooms"], "ans": "B", "hint": "Avoid bacteria traps."},
+        {"q": "Advice on old makeup?", "options": ["A) Boil it", "B) Share it", "C) Discard it", "D) Fridge"], "ans": "C", "hint": "Cannot be sterilized."},
+        {"q": "Treatment for purulent discharge?", "options": ["A) Antihistamine", "B) Lubricant", "C) Topical antibiotics", "D) Steroids"], "ans": "C", "hint": "Kills bacteria."},
+        {"q": "Treatment for allergic itching?", "options": ["A) Antibiotics", "B) Antihistamines", "C) Artificial tears", "D) Saline"], "ans": "B", "hint": "Blocks histamine."},
+        {"q": "Treatment for non-infectious dry eye?", "options": ["A) Lubricating drops", "B) Antibiotics", "C) Surgery", "D) Antiviral"], "ans": "A", "hint": "Supplement moisture."},
+        {"q": "When to refer for oral antibiotics?", "options": ["A) Mild crusting", "B) Moderate/severe infection", "C) Dry eye", "D) Dust allergy"], "ans": "B", "hint": "Deep tissue infections."},
+        {"q": "Surgical referral for chalazion?", "options": ["A) First day", "B) Large/persistent", "C) Itchy", "D) Never"], "ans": "B", "hint": "If conservative fails."},
+        {"q": "Driver of 'Evaporative' dry eye?", "options": ["A) Sjogren's", "B) Aging", "C) MGD", "D) Contacts"], "ans": "C", "hint": "Blocked oil glands."},
+        {"q": "Aqueous-deficient dry eye?", "options": ["A) Dusty environment", "B) Sjogren's", "C) Mascara", "D) Screens"], "ans": "B", "hint": "Lacrimal gland issue."},
+        {"q": "Trigger for neuropathic dry eye?", "options": ["A) Overhydration", "B) Nerve irritation", "C) Blinking", "D) Humidity"], "ans": "B", "hint": "Damage to nerves."},
+        {"q": "Environmental factor for dry eye?", "options": ["A) Humidity", "B) Smoke/dry air", "C) Sunglasses", "D) Humidifier"], "ans": "B", "hint": "Increases evaporation."},
+        {"q": "Symptoms 'gritty' + 'screens'?", "options": ["A) Glaucoma", "B) Dry Eye", "C) Cataracts", "D) Macular"], "ans": "B", "hint": "Screen time = no blinking."},
+        {"q": "Worse in morning?", "options": ["A) Overproduction", "B) Lack of blinking", "C) Light", "D) BP"], "ans": "B", "hint": "Lids sticking to cornea."},
+        {"q": "Meaning of 'inspissated meibum'?", "options": ["A) Watery", "B) Thickened oil", "C) Clear oil", "D) Blood"], "ans": "B", "hint": "Physical state of blockage."},
+        {"q": "Action for spreading redness?", "options": ["A) Cold compress", "B) OTC drops", "C) Urgent referral", "D) Pop it"], "ans": "C", "hint": "Signs of cellulitis."},
+        {"q": "Severe eye pain red flag?", "options": ["A) Blocked duct", "B) Deeper infection", "C) Allergy", "D) Tiredness"], "ans": "B", "hint": "Deeper issues."},
+        {"q": "No improvement in 3-5 days?", "options": ["A) Wait longer", "B) Refer", "C) Double dose", "D) Homeopathy"], "ans": "B", "hint": "Requires reassessment."},
+        {"q": "Forbidden action for lumps?", "options": ["A) Wash hands", "B) Popping it", "C) Towel", "D) Contacts"], "ans": "B", "hint": "Spreads infection."},
+        {"q": "Why not share towels?", "options": ["A) Prevent spread", "B) Color", "C) Rhinitis", "D) Compresses"], "ans": "A", "hint": "Highly contagious."},
+        {"q": "Pharmacist role?", "options": ["A) Surgery", "B) Diagnose", "C) Triage/Refer", "D) Prescribe"], "ans": "C", "hint": "Filters issues."},
+        {"q": "Term for eyelid inflammation?", "options": ["A) Blepharitis", "B) Conjunctivitis", "C) Keratitis", "D) Uveitis"], "ans": "A", "hint": "Prefix 'blepharo-'."},
+        {"q": "Immunosuppression group?", "options": ["A) Athletes", "B) Chemotherapy", "C) Acne", "D) Pregnant"], "ans": "B", "hint": "Low white cells."},
+        {"q": "Baby shampoo for hygiene?", "options": ["A) Antibiotics", "B) pH balanced", "C) Blur vision", "D) Eyelash removal"], "ans": "B", "hint": "Tear-free/gentle."},
+        {"q": "Recurrent lump advice?", "options": ["A) Ignore", "B) Referral", "C) Ice", "D) Remover"], "ans": "B", "hint": "Rule out malignancy."},
+        {"q": "Local sign?", "options": ["A) Pain", "B) Swelling", "C) Sand", "D) Itch"], "ans": "B", "hint": "Objective."},
+        {"q": "Visual disturbance term?", "options": ["A) Chronic", "B) Acute Red Flag", "C) Aging", "D) Allergic"], "ans": "B", "hint": "Emergency."},
+        {"q": "Tearing + dry eye?", "options": ["A) Pain", "B) Reflex tearing", "C) Blockage", "D) Illusion"], "ans": "B", "hint": "Body compensates."},
+        {"q": "Cleaning water temp?", "options": ["A) Boiling", "B) Ice", "C) Lukewarm", "D) Room temp"], "ans": "C", "hint": "Dissolves crusts."},
+        {"q": "Unsure red flag rule?", "options": ["A) Guess", "B) Wait", "C) Refer", "D) Patient"], "ans": "C", "hint": "Safety first."},
+        {"q": "Stye vs Chalazion?", "options": ["A) Stye=Acute/painful, Chalazion=Chronic/painless", "B) Surgery", "C) Contagious", "D) Same"], "ans": "A", "hint": "One hurts, one doesn't."},
+        {"q": "Cosmetic infection risk?", "options": ["A) Men", "B) Women", "C) Infants", "D) Elderly men"], "ans": "B", "hint": "Frequent makeup use."},
+        {"q": "Contact lens effect?", "options": ["A) Extra moisture", "B) Disrupt tear film", "C) Cure MGD", "D) UV block"], "ans": "B", "hint": "Plastic disrupts tears."},
+        {"q": "First OTC lump treatment?", "options": ["A) Warm compress", "B) Surgery", "C) Antibiotics", "D) Steroid"], "ans": "A", "hint": "Conservative first."},
+        {"q": "Allergy trigger?", "options": ["A) Heating", "B) Dust/pollen", "C) Tap water", "D) Blue light"], "ans": "B", "hint": "Airborne allergens."}
+    ];
+
+    let currentQ = 0;
+    let score = 0;
+
+    function render() {
+        if(currentQ >= questions.length) {
+            document.getElementById('q-box').innerHTML = `<h2>Finished! Your score: ${score}/${questions.length}</h2><button onclick="location.reload()">Restart</button>`;
+            return;
+        }
+        const q = questions[currentQ];
+        document.getElementById('score').innerText = `Question ${currentQ + 1} / 50`;
+        let html = `<div class='question'>${q.q}</div><div class='options'>`;
+        q.options.forEach(opt => {
+            html += `<button class="opt" onclick="check('${opt[0]}', '${q.ans}', this)">${opt}</button>`;
+        });
+        html += `</div><button id="hintBtn" class="btn btn-hint" onclick="showHint()">💡 Show Hint</button><div class='hint' id='hint'>${q.hint}</div><button id="nextBtn" class="btn btn-next" onclick="next()">Next ➡️</button>`;
+        document.getElementById('q-box').innerHTML = html;
+    }
+    function check(choice, ans, btn) {
+        let btns = document.querySelectorAll('.opt');
+        btns.forEach(b => b.disabled = true);
+        if (choice === ans) {
+            btn.classList.add('correct');
+            score++;
+        } else {
+            btn.classList.add('wrong');
+            btns.forEach(b => { if(b.innerHTML[0] === ans) b.classList.add('correct'); });
+        }
+        document.getElementById('nextBtn').style.display = 'block';
+    }
+    function showHint() { document.getElementById('hint').style.display = 'block'; document.getElementById('hintBtn').disabled = true; }
+    function next() { currentQ++; render(); }
+    render();
+</script>
+</body>
+</html>

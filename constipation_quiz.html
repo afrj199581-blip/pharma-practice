@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Constipation Management Quiz</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; padding: 15px; margin: 0; }
+        .quiz-container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { text-align: center; font-size: 1.4rem; color: #2c3e50; }
+        .question { font-size: 1.1rem; margin-bottom: 20px; color: #34495e; font-weight: bold; }
+        .options button { display: block; width: 100%; margin: 8px 0; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1rem; background: #fff; text-align: left; }
+        .correct { background-color: #2ecc71 !important; color: white; border-color: #27ae60 !important; }
+        .wrong { background-color: #e74c3c !important; color: white; border-color: #c0392b !important; }
+        .hint { margin-top: 15px; color: #856404; background: #fff3cd; padding: 12px; border-radius: 8px; display: none; font-size: 0.9rem; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; font-size: 1rem; margin-top: 10px; }
+        #hintBtn { background: #f39c12; }
+        #nextBtn { background: #3498db; display: none; }
+        #score { text-align: center; font-weight: bold; margin-bottom: 10px; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+<div class="quiz-container">
+    <h1>Constipation Management Quiz</h1>
+    <div id="score">Question 1 / 50</div>
+    <div id="q-box"></div>
+</div>
+<script>
+    const questions = [
+        {"q": "Constipation is typically characterized by fewer than how many bowel movements per week?", "options": ["A) 1", "B) 2", "C) 3", "D) 5"], "ans": "C", "hint": "Medically defined symptom[cite: 1]."},
+        {"q": "Which demographic is statistically more likely to suffer from constipation?", "options": ["A) Men under 30", "B) Women", "C) Teenage boys", "D) Athletes"], "ans": "B", "hint": "Hormonal changes contribute[cite: 1]."},
+        {"q": "What % of women in late pregnancy experience constipation?", "options": ["A) 10%", "B) 20%", "C) 40%", "D) 80%"], "ans": "C", "hint": "Progesterone/Iron factors[cite: 1]."},
+        {"q": "Primary lifestyle cause?", "options": ["A) High fluid", "B) Activity", "C) Low fiber", "D) Vitamins"], "ans": "C", "hint": "Bulk aids movement[cite: 1]."},
+        {"q": "CONSTIPation mnemonic 'I' stands for?", "options": ["A) Insulin", "B) Ibuprofen", "C) Iron supplements", "D) Isotretinoin"], "ans": "C", "hint": "Commonly given in pregnancy[cite: 1]."},
+        {"q": "Which antidepressants cause constipation?", "options": ["A) SSRIs", "B) Tricyclics (TCAs)", "C) MAOIs", "D) SNRIs"], "ans": "B", "hint": "Anticholinergic properties[cite: 1]."},
+        {"q": "Opioids mechanism for constipation?", "options": ["A) Acid increase", "B) Decreased motility", "C) Bacteria kill", "D) Heart rate"], "ans": "B", "hint": "Paralyzes bowel[cite: 1]."},
+        {"q": "Serious Red Flag cause?", "options": ["A) IBS", "B) Pregnancy", "C) Diet", "D) Colorectal cancer"], "ans": "D", "hint": "Suspicious in older patients[cite: 1]."},
+        {"q": "Constipation + weight gain + cold intolerance = ?", "options": ["A) Hyperthyroidism", "B) Hypothyroidism", "C) Diabetes", "D) Asthma"], "ans": "B", "hint": "Slow metabolism[cite: 1]."},
+        {"q": "Same-day referral age threshold?", "options": ["A) >18", "B) >30", "C) >40", "D) >65"], "ans": "C", "hint": "Rectal carcinoma risk[cite: 1]."},
+        {"q": "Adult referral duration?", "options": ["A) 3 days", "B) 7 days", "C) 14 days", "D) 21 days"], "ans": "C", "hint": "2 weeks rule[cite: 1]."},
+        {"q": "Child referral duration?", "options": ["A) 3 days", "B) 7 days", "C) 14 days", "D) 30 days"], "ans": "B", "hint": "Dehydrate faster[cite: 1]."},
+        {"q": "Bright red blood suggests?", "options": ["A) Upper bleed", "B) Hemorrhoids/fissure", "C) Ulcer", "D) Esophageal"], "ans": "B", "hint": "Close to exit[cite: 1]."},
+        {"q": "Melaena suggests?", "options": ["A) Upper GI bleed", "B) Diet", "C) Healthy", "D) Lower bleed"], "ans": "A", "hint": "Digested blood[cite: 1]."},
+        {"q": "Alternating diarrhoea/constipation?", "options": ["A) Cancer", "B) IBS", "C) Celiac", "D) Appendicitis"], "ans": "B", "hint": "Hallmark functional disorder[cite: 1]."},
+        {"q": "First-line management?", "options": ["A) Opioids", "B) Surgery", "C) Lifestyle modifications", "D) Stimulants"], "ans": "C", "hint": "Root cause focus[cite: 1]."},
+        {"q": "Recommended daily fiber?", "options": ["A) 10g", "B) 30g", "C) 50g", "D) 100g"], "ans": "B", "hint": "Healthy bowel bulk[cite: 1]."},
+        {"q": "Fiber requires?", "options": ["A) No movement", "B) 2L water/day", "C) Red meat", "D) Coffee"], "ans": "B", "hint": "Prevents worsening[cite: 1]."},
+        {"q": "Improvement timeline?", "options": ["A) 1h", "B) 12h", "C) 3-5 days", "D) 2 weeks"], "ans": "C", "hint": "System adjustment[cite: 1]."},
+        {"q": "Fiber side effect?", "options": ["A) Headache", "B) Bloating/pain", "C) Vision", "D) Hair loss"], "ans": "B", "hint": "Gas production[cite: 1]."},
+        {"q": "Safest laxative class?", "options": ["A) Stimulant", "B) Osmotic", "C) Softener", "D) Bulk-forming"], "ans": "D", "hint": "Mimics fiber[cite: 1]."},
+        {"q": "Ispaghula class?", "options": ["A) Osmotic", "B) Stimulant", "C) Bulk-forming", "D) Softener"], "ans": "C", "hint": "Absorbs water[cite: 1]."},
+        {"q": "Bulk onset?", "options": ["A) 15m", "B) 6h", "C) 12-72h", "D) 1w"], "ans": "C", "hint": "Medium-onset[cite: 1]."},
+        {"q": "Ispaghula advice?", "options": ["A) Chew", "B) Drink immediately", "C) Boil", "D) Wait 1h"], "ans": "B", "hint": "Thickens fast[cite: 1]."},
+        {"q": "Fastest oral onset?", "options": ["A) Bulk", "B) Softener", "C) Osmotic", "D) Stimulant"], "ans": "D", "hint": "6-12 hours[cite: 1]."},
+        {"q": "Bisacodyl class?", "options": ["A) Stimulant", "B) Osmotic", "C) Bulk", "D) Emollient"], "ans": "A", "hint": "Triggers peristalsis[cite: 1]."},
+        {"q": "Stimulant side effect?", "options": ["A) Dry mouth", "B) Abdominal cramping", "C) Sleep", "D) Weight gain"], "ans": "B", "hint": "Forced contraction[cite: 1]."},
+        {"q": "Avoid stimulants in pregnancy?", "options": ["A) Fetal blindness", "B) Placenta", "C) Uterine contractions", "D) Taste"], "ans": "C", "hint": "Uterine stimulation[cite: 1]."},
+        {"q": "Bisacodyl enteric coating?", "options": ["A) Water", "B) No Antacids/milk", "C) Bread", "D) Apple"], "ans": "B", "hint": "Alters pH[cite: 1]."},
+        {"q": "Lactulose class?", "options": ["A) Stimulant", "B) Bulk", "C) Osmotic", "D) Prokinetic"], "ans": "C", "hint": "Osmosis[cite: 1]."},
+        {"q": "Lactulose onset?", "options": ["A) 30m", "B) 6h", "C) 48h+", "D) 1w"], "ans": "C", "hint": "Slow[cite: 1]."},
+        {"q": "Lactulose disadvantage?", "options": ["A) Injection", "B) Sweet taste", "C) Vomiting", "D) Yellow skin"], "ans": "B", "hint": "Synthetic sugar[cite: 1]."},
+        {"q": "Lactulose child risk?", "options": ["A) Growth", "B) Caries", "C) Hair", "D) Puberty"], "ans": "B", "hint": "Sugar-related[cite: 1]."},
+        {"q": "Docusate Sodium class?", "options": ["A) Softener", "B) Stimulant", "C) Osmotic", "D) Bulk"], "ans": "A", "hint": "Surfactant[cite: 1]."},
+        {"q": "Safest free of sides?", "options": ["A) Stimulant", "B) Osmotic", "C) Softener", "D) Saline"], "ans": "C", "hint": "Lubricates only[cite: 1]."},
+        {"q": "Painful defecation reflex?", "options": ["A) Loss appetite", "B) Suppression reflex", "C) Fat absorption", "D) Stops digestion"], "ans": "B", "hint": "Holding it in[cite: 1]."},
+        {"q": "Glycerol suppository onset?", "options": ["A) 1-3d", "B) 12h", "C) 15-30m", "D) 48h"], "ans": "C", "hint": "Direct[cite: 1]."},
+        {"q": "Suppository prep?", "options": ["A) Boil", "B) Dip in water", "C) Crush", "D) Freeze"], "ans": "B", "hint": "Lubrication[cite: 1]."},
+        {"q": "Lying down after suppository?", "options": ["A) 10s", "B) 5m", "C) 1h", "D) 4h"], "ans": "B", "hint": "Prevent slipping[cite: 1]."},
+        {"q": "Avoid for constipation?", "options": ["A) OJ", "B) Peppermint", "C) Caffeine", "D) Milk"], "ans": "C", "hint": "Diuretic[cite: 1]."},
+        {"q": "Pregnant 1st choice?", "options": ["A) Stimulant", "B) Osmotic", "C) Mineral oil", "D) Bulk-forming"], "ans": "D", "hint": "Safe local action[cite: 1]."},
+        {"q": "Pregnant iron constipation?", "options": ["A) Stop iron", "B) Bulk-forming", "C) Senna", "D) Enema"], "ans": "B", "hint": "Safe/effective[cite: 1]."},
+        {"q": "Laxative abuse risk?", "options": ["A) Addictive", "B) Weight loss/eating disorders", "C) Kidney fail", "D) Cure"], "ans": "B", "hint": "Young women misuse[cite: 1]."},
+        {"q": "Combining laxatives?", "options": ["A) Forbidden", "B) Justifiable in refractory cases", "C) Works 5m", "D) No sides"], "ans": "B", "hint": "Occasional add-on[cite: 1]."},
+        {"q": "70y man weight loss?", "options": ["A) Bisacodyl", "B) Fiber", "C) Refer", "D) Water"], "ans": "C", "hint": "Cancer flag[cite: 1]."},
+        {"q": "Not 1st line?", "options": ["A) Bulk", "B) Osmotic", "C) Stimulants", "D) Fiber"], "ans": "C", "hint": "Dependency risk[cite: 1]."},
+        {"q": "Child referral age?", "options": ["A) 6y", "B) 12y", "C) 16y", "D) 18y"], "ans": "A", "hint": "Functional issues[cite: 1]."},
+        {"q": "Safety netting?", "options": ["A) Carrying medicine", "B) Escalate if failure", "C) Selling 3", "D) Refusal"], "ans": "B", "hint": "Clear plan[cite: 1]."},
+        {"q": "48h osmotic?", "options": ["A) Senna", "B) Bisacodyl", "C) Lactulose", "D) Docusate"], "ans": "C", "hint": "Slow agent[cite: 1]."},
+        {"q": "Iron stool change?", "options": ["A) Green", "B) White", "C) Black tarry", "D) Sulfur"], "ans": "C", "hint": "Harmless effect[cite: 1]."}
+    ];
+    let currentQ = 0, score = 0;
+    function render() {
+        if(currentQ >= questions.length) { document.getElementById('q-box').innerHTML = `<h3>Score: ${score}/${questions.length}</h3><button class="btn" onclick="location.reload()">Restart</button>`; return; }
+        const q = questions[currentQ];
+        document.getElementById('score').innerText = `Question ${currentQ + 1} / 50`;
+        let h = `<div class='question'>${q.q}</div><div class='options'>`;
+        q.options.forEach(o => h += `<button class='opt' onclick="check('${o[0]}', '${q.ans}', this)">${o}</button>`);
+        h += `</div><button class='btn' id='hintBtn' onclick="hint()">💡 Hint</button><div class='hint' id='h'>${q.hint}</div><button class='btn' id='nextBtn' onclick="next()">Next ➡️</button>`;
+        document.getElementById('q-box').innerHTML = h;
+    }
+    function check(choice, ans, btn) {
+        document.querySelectorAll('.opt').forEach(b => b.disabled = true);
+        if(choice==ans) { btn.classList.add('correct'); score++; } else { btn.classList.add('wrong'); document.querySelectorAll('.opt').forEach(b => { if(b.innerHTML[0] == ans) b.classList.add('correct'); }); }
+        document.getElementById('nextBtn').style.display = 'block';
+    }
+    function hint() { document.getElementById('h').style.display='block'; document.getElementById('hintBtn').disabled = true; }
+    function next() { currentQ++; render(); }
+    render();
+</script>
+</body>
+</html>

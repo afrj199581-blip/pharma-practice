@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ear Conditions Quiz</title>
+    <style>
+        body { font-family: sans-serif; background: #eef2f3; padding: 15px; margin: 0; }
+        .quiz-container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { text-align: center; font-size: 1.4rem; color: #2c3e50; }
+        .question { font-size: 1.1rem; margin-bottom: 20px; color: #34495e; font-weight: bold; }
+        .options button { display: block; width: 100%; margin: 8px 0; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; font-size: 1rem; background: #fff; text-align: left; }
+        .correct { background-color: #2ecc71 !important; color: white; border-color: #27ae60 !important; }
+        .wrong { background-color: #e74c3c !important; color: white; border-color: #c0392b !important; }
+        .hint { margin-top: 15px; color: #856404; background: #fff3cd; padding: 12px; border-radius: 8px; display: none; font-size: 0.9rem; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; font-size: 1rem; margin-top: 10px; }
+        #hintBtn { background: #f39c12; }
+        #nextBtn { background: #3498db; display: none; }
+        #score { text-align: center; font-weight: bold; margin-bottom: 10px; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+<div class="quiz-container">
+    <h1>Ear Conditions Quiz</h1>
+    <div id="score">Question 1 / 50</div>
+    <div id="q-box"></div>
+</div>
+<script>
+    const questions = [
+        {"q": "What is the most common cause of conductive hearing loss in the pharmacy?", "options": ["A) Infection", "B) Cerumen (wax) impaction", "C) Tinnitus", "D) Nerve damage"], "ans": "B", "hint": "It's the most common reason for ear blockage."},
+        {"q": "Which of the following is an absolute RED FLAG for ear pain?", "options": ["A) Mild itching", "B) Sudden hearing loss", "C) Ear discharge with blood", "D) Itching in the ear canal"], "ans": "C", "hint": "Bleeding is never normal."},
+        {"q": "What is the medical term for 'Swimmer's Ear'?", "options": ["A) Otitis media", "B) Otitis externa", "C) Tinnitus", "D) Presbycusis"], "ans": "B", "hint": "Inflammation of the outer ear canal."},
+        {"q": "Which of these is NOT a treatment for ear wax removal?", "options": ["A) Olive oil", "B) Sodium bicarbonate drops", "C) Cotton buds", "D) Hydrogen peroxide"], "ans": "C", "hint": "Cotton buds push wax deeper."},
+        {"q": "Which patient MUST be referred if they have ear pain and fever?", "options": ["A) Adult with simple wax", "B) Child/Infant", "C) Athlete", "D) Pregnant woman"], "ans": "B", "hint": "Risk of otitis media."},
+        {"q": "What is the primary symptom of Otitis Externa?", "options": ["A) Tinnitus", "B) Ear pain and tenderness on tragus touch", "C) Wax buildup", "D) Hearing loss only"], "ans": "B", "hint": "Touching the tragus makes the pain worse."},
+        {"q": "Which of the following is a common cause of Otitis Externa?", "options": ["A) Genetic mutation", "B) Bacterial/Fungal infection", "C) High blood pressure", "D) Asthma"], "ans": "B", "hint": "Often associated with moisture/swimming."},
+        {"q": "How long should a patient use wax softening drops before re-evaluating?", "options": ["A) 1 day", "B) 3-5 days", "C) 1 month", "D) 1 year"], "ans": "B", "hint": "It takes time to soften the hardened wax."},
+        {"q": "Which instruction is vital when using ear drops?", "options": ["A) Put them in boiling", "B) Tilt head, put in, wait 5 mins", "C) Use in eyes too", "D) Freeze them"], "ans": "B", "hint": "Gravity helps the drop reach the wax."},
+        {"q": "What does a perforated eardrum mean?", "options": ["A) Normal hearing", "B) Hole in the eardrum", "C) Wax buildup", "D) Infection"], "ans": "B", "hint": "It's a tear in the tympanic membrane."},
+        {"q": "Which condition is characterized by a ringing sound in the ear?", "options": ["A) Tinnitus", "B) Vertigo", "C) Otitis externa", "D) Wax"], "ans": "A", "hint": "Ringing/buzzing sound."},
+        {"q": "When is a GP referral necessary for tinnitus?", "options": ["A) If it is pulsatile (rhythmic) or unilateral", "B) If it lasts 1 second", "C) If there is wax", "D) It is never necessary"], "ans": "A", "hint": "Pulsatile can indicate vascular issues."},
+        {"q": "Which type of infection is more common in children?", "options": ["A) Otitis media", "B) Otitis externa", "C) Cerumen impaction", "D) Tinnitus"], "ans": "A", "hint": "Middle ear infection."},
+        {"q": "What is the best way to clean ears?", "options": ["A) Cotton buds", "B) Finger", "C) Only wash external ear", "D) Hydrogen peroxide"], "ans": "C", "hint": "The ear is self-cleaning."},
+        {"q": "Symptoms of wax impaction?", "options": ["A) Pain", "B) Fullness, hearing loss", "C) Itching", "D) All of the above"], "ans": "D", "hint": "Wax causes several symptoms."},
+        {"q": "What is the 'tragus sign'?", "options": ["A) Pain when pressing the tragus", "B) Redness of the lobe", "C) Hearing test", "D) Wax test"], "ans": "A", "hint": "Suggests Otitis Externa."},
+        {"q": "Which patients are at high risk for ear infections?", "options": ["A) Swimmers", "B) Diabetics", "C) Immunocompromised", "D) All of the above"], "ans": "D", "hint": "These factors decrease resistance."},
+        {"q": "What is Meniere's disease related to?", "options": ["A) Ear wax", "B) Inner ear fluid balance", "C) Outer ear infection", "D) Tinnitus"], "ans": "B", "hint": "Causes vertigo/hearing loss."},
+        {"q": "Which OTC drops are used for cleaning?", "options": ["A) Antibiotics", "B) Sodium Bicarbonate", "C) Antihistamines", "D) Steroids"], "ans": "B", "hint": "Softens wax."},
+        {"q": "Is cotton bud use advised?", "options": ["A) Yes", "B) No, it compacts wax", "C) Only for kids", "D) Only for wax"], "ans": "B", "hint": "Don't put anything in your ear!"},
+        {"q": "What is the eustachian tube?", "options": ["A) Middle ear to throat", "B) Inner ear to brain", "C) Outer ear to eardrum", "D) Wax channel"], "ans": "A", "hint": "Equalizes pressure."},
+        {"q": "Otitis media signs?", "options": ["A) Fever, pain, crying child", "B) Itching", "C) Wax", "D) Tinnitus"], "ans": "A", "hint": "Classic in kids."},
+        {"q": "What is vertigo?", "options": ["A) Ringing", "B) Dizziness/spinning", "C) Wax", "D) Itching"], "ans": "B", "hint": "Sensation of movement."},
+        {"q": "Why avoid drops if eardrum is perforated?", "options": ["A) It hurts", "B) It causes toxicity/infection inside", "C) It causes deafness", "D) It does nothing"], "ans": "B", "hint": "The ear is no longer 'closed'."},
+        {"q": "Age related hearing loss?", "options": ["A) Tinnitus", "B) Presbycusis", "C) Wax", "D) Otitis"], "ans": "B", "hint": "Normal aging."},
+        {"q": "What is the function of the outer ear?", "options": ["A) Collect sound", "B) Balance", "C) Hear", "D) Wax"], "ans": "A", "hint": "The pinna captures sound."},
+        {"q": "Does wax have any benefit?", "options": ["A) No", "B) Yes, protective", "C) Yes, hearing aid", "D) Yes, cleaning"], "ans": "B", "hint": "Protects and lubricates."},
+        {"q": "Most common red flag in ear conditions?", "options": ["A) Wax", "B) Hearing loss", "C) Ear discharge", "D) Itching"], "ans": "C", "hint": "Discharge is pathological."},
+        {"q": "What is otitis media with effusion?", "options": ["A) Infection", "B) Fluid in middle ear (glue ear)", "C) Wax", "D) Tinnitus"], "ans": "B", "hint": "Fluid accumulation."},
+        {"q": "Should we recommend antibiotics for swimmers ear?", "options": ["A) Always", "B) No, refer to GP", "C) Sometimes", "D) Only if itchy"], "ans": "B", "hint": "Prescription required."},
+        {"q": "Risk of overusing wax drops?", "options": ["A) Deafness", "B) Skin irritation", "C) Wax buildup", "D) Tinnitus"], "ans": "B", "hint": "Drops are irritants."},
+        {"q": "What does a dull eardrum mean?", "options": ["A) Normal", "B) Infection (media)", "C) Wax", "D) Tinnitus"], "ans": "B", "hint": "Loss of transparency."},
+        {"q": "Most common pathogen for otitis media?", "options": ["A) Staph", "B) Strep pneumo", "C) E. coli", "D) Yeast"], "ans": "B", "hint": "Respiratory pathogen."},
+        {"q": "Can cold cause ear pain?", "options": ["A) No", "B) Yes, via Eustachian tube", "C) Only in summer", "D) Yes, wax"], "ans": "B", "hint": "Pressure buildup."},
+        {"q": "What is a myringotomy?", "options": ["A) Surgery on eardrum", "B) Wax removal", "C) Ear cleaning", "D) Hearing test"], "ans": "A", "hint": "Surgical hole."},
+        {"q": "Is deafness a sign of wax?", "options": ["A) Sudden", "B) Gradual", "C) Not at all", "D) Only if infection"], "ans": "B", "hint": "Builds up slowly."},
+        {"q": "What is the Pinna?", "options": ["A) Inner ear", "B) Outer ear part", "C) Eardrum", "D) Wax"], "ans": "B", "hint": "External ear."},
+        {"q": "Should you clean inside the ear?", "options": ["A) Yes", "B) No", "C) Sometimes", "D) With buds"], "ans": "B", "hint": "Self-cleaning."},
+        {"q": "Is pain always present in ear infections?", "options": ["A) Yes", "B) Not always", "C) Never", "D) Only in adults"], "ans": "B", "hint": "Some can be painless."},
+        {"q": "How to dry ears?", "options": ["A) Towel", "B) Bud", "C) Tilt head/shake", "D) Hairdryer"], "ans": "C", "hint": "Safe method."},
+        {"q": "Ear ache in adults red flag?", "options": ["A) Wax", "B) Pain without local signs", "C) Itching", "D) Tinnitus"], "ans": "B", "hint": "Look for referred pain (TMJ)."},
+        {"q": "What is 'Glue Ear'?", "options": ["A) Wax", "B) Otitis media with effusion", "C) Infection", "D) Tinnitus"], "ans": "B", "hint": "Thick fluid."},
+        {"q": "Ear drops vs spray?", "options": ["A) Spray is better", "B) Drops better", "C) Same", "D) Not used"], "ans": "B", "hint": "Drops reach deeper."},
+        {"q": "Referral for child earache?", "options": ["A) 1 hour", "B) 24 hours if no improvement", "C) Never", "D) Only if 50yo"], "ans": "B", "hint": "Don't delay."},
+        {"q": "What if eardrum is red?", "options": ["A) Infection", "B) Wax", "C) Normal", "D) Tinnitus"], "ans": "A", "hint": "Inflammation."},
+        {"q": "Is cerumen normal?", "options": ["A) No", "B) Yes", "C) Pathological", "D) Only in men"], "ans": "B", "hint": "Natural."},
+        {"q": "Can allergies cause ear pain?", "options": ["A) Yes", "B) No", "C) Never", "D) Only wax"], "ans": "A", "hint": "Inflammation/congestion."},
+        {"q": "What is the 'Valsalva maneuver'?", "options": ["A) Popping ears", "B) Hearing test", "C) Ear cleaning", "D) Wax"], "ans": "A", "hint": "Clearing the Eustachian tube."},
+        {"q": "When to refer tinnitus?", "options": ["A) Unilateral/Pulsatile", "B) Bilateral", "C) Both", "D) None"], "ans": "A", "hint": "Needs imaging."},
+        {"q": "Best prevention for Swimmer's Ear?", "options": ["A) Keep ear dry", "B) Swim daily", "C) Clean with buds", "D) Nothing"], "ans": "A", "hint": "Moisture is the enemy."}
+    ];
+    let currentQ = 0, score = 0;
+    function render() {
+        if(currentQ >= questions.length) {
+            document.getElementById('q-box').innerHTML = `<h2>Finished! Score: ${score}/${questions.length}</h2><button class="btn" style="background:#2ecc71" onclick="location.reload()">Restart</button>`;
+            return;
+        }
+        const q = questions[currentQ];
+        document.getElementById('score').innerText = `Question ${currentQ + 1} / 50`;
+        let html = `<div class='question'>${q.q}</div><div class='options'>`;
+        q.options.forEach(opt => {
+            html += `<button class="opt" onclick="check('${opt[0]}', '${q.ans}', this)">${opt}</button>`;
+        });
+        html += `</div><button id="hintBtn" class="btn btn-hint" onclick="showHint()">💡 Show Hint</button><div class='hint' id='hint'>${q.hint}</div><button id="nextBtn" class="btn btn-next" onclick="next()">Next ➡️</button>`;
+        document.getElementById('q-box').innerHTML = html;
+    }
+    function check(choice, ans, btn) {
+        document.querySelectorAll('.opt').forEach(b => b.disabled = true);
+        if (choice === ans) { btn.classList.add('correct'); score++; } 
+        else { btn.classList.add('wrong'); document.querySelectorAll('.opt').forEach(b => { if(b.innerHTML[0] === ans) b.classList.add('correct'); }); }
+        document.getElementById('nextBtn').style.display = 'block';
+    }
+    function showHint() { document.getElementById('hint').style.display = 'block'; document.getElementById('hintBtn').disabled = true; }
+    function next() { currentQ++; render(); }
+    render();
+</script>
+</body>
+</html>
