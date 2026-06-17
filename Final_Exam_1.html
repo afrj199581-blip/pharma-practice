@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Final Exam (100 Qs)</title>
+    <style>
+        :root { --primary: #2c3e50; --secondary: #3498db; --success: #2ecc71; --danger: #e74c3c; --bg: #ecf0f1; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); padding: 15px; margin: 0; color: #333; }
+        .quiz-container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .header-area { text-align: center; border-bottom: 2px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
+        h1 { color: var(--primary); font-size: 1.8rem; margin: 0 0 10px 0; }
+        
+        .progress-container { width: 100%; background-color: #ddd; border-radius: 8px; margin-bottom: 15px; overflow: hidden; height: 12px; }
+        .progress-bar { height: 100%; background-color: var(--secondary); width: 0%; transition: width 0.3s ease; }
+        
+        .stats { display: flex; justify-content: space-between; font-weight: bold; color: #7f8c8d; font-size: 1.1rem; }
+        
+        .question { font-size: 1.3rem; margin-bottom: 20px; color: var(--primary); font-weight: 600; line-height: 1.5; }
+        .options button { display: block; width: 100%; margin: 10px 0; padding: 15px; border: 2px solid #ecf0f1; border-radius: 8px; cursor: pointer; font-size: 1.1rem; background: #fff; text-align: left; transition: all 0.2s; color: #444; }
+        .options button:hover:not(:disabled) { border-color: var(--secondary); background: #f7f9fa; }
+        
+        .correct { background-color: var(--success) !important; color: white !important; border-color: var(--success) !important; }
+        .wrong { background-color: var(--danger) !important; color: white !important; border-color: var(--danger) !important; }
+        
+        .hint-box { margin-top: 15px; background: #fff3cd; color: #856404; padding: 15px; border-radius: 8px; display: none; font-size: 1rem; border-left: 4px solid #ffeeba; }
+        
+        .controls { display: flex; gap: 15px; margin-top: 25px; }
+        .btn { flex: 1; padding: 15px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; color: white; font-size: 1.1rem; transition: 0.2s; }
+        .btn-hint { background: #f39c12; }
+        .btn-hint:hover { background: #e67e22; }
+        .btn-next { background: var(--secondary); display: none; }
+        .btn-next:hover { background: #2980b9; }
+        .btn-restart { background: var(--primary); margin-top: 20px; width: 100%; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <div class="header-area">
+        <h1>Pharmacist Final Exam (100 Questions)</h1>
+        <div class="progress-container"><div class="progress-bar" id="p-bar"></div></div>
+        <div class="stats">
+            <span id="score-tracker">Score: 0</span>
+            <span id="q-tracker">Question: 1 / 100</span>
+        </div>
+    </div>
+    <div id="q-box"></div>
+</div>
+
+<script>
+    const questions = [{"q": "What is the most common bacteria responsible for localized eyelid infections?", "options": ["Streptococcus", "Staphylococcus", "Pseudomonas", "E. coli"], "ans": "Staphylococcus", "hint": "Skin flora."}, {"q": "Which gland's obstruction primarily causes a chalazion?", "options": ["Lacrimal", "Sweat", "Meibomian", "Sebaceous"], "ans": "Meibomian", "hint": "Oily layer of tears."}, {"q": "What is an absolute 'Red Flag' requiring urgent referral in eyelid disorders?", "options": ["Mild itching", "Watery discharge", "Blurred vision", "Morning crusting"], "ans": "Blurred vision", "hint": "Sight-threatening."}, {"q": "What is a core component of daily eyelid hygiene?", "options": ["Antibacterial soap", "Diluted baby shampoo", "Alcohol wipes", "Steroid cream"], "ans": "Diluted baby shampoo", "hint": "Tear-free."}, {"q": "How long should warm compresses be applied?", "options": ["1-2 mins", "10-15 mins", "30-45 mins", "60 mins"], "ans": "10-15 mins", "hint": "To melt oils."}, {"q": "Advice regarding old eye makeup after an infection?", "options": ["Boil it", "Share it", "Discard it", "Refrigerate it"], "ans": "Discard it", "hint": "Prevents reinfection."}, {"q": "OTC treatment for purulent bacterial discharge?", "options": ["Antihistamines", "Topical antibiotics", "Steroids", "Lubricants"], "ans": "Topical antibiotics", "hint": "Kills bacteria."}, {"q": "Which condition is a driver of 'Evaporative' dry eye?", "options": ["Sjogren's", "Meibomian Gland Dysfunction (MGD)", "Aging", "Screen time"], "ans": "Meibomian Gland Dysfunction (MGD)", "hint": "Lipid layer deficit."}, {"q": "Spreading redness around the eye suggests?", "options": ["Allergy", "Cellulitis (Urgent Referral)", "Dry eye", "Normal healing"], "ans": "Cellulitis (Urgent Referral)", "hint": "Tissue infection."}, {"q": "Primary difference between Stye and Chalazion?", "options": ["Stye is painful/acute; Chalazion is painless/chronic", "Both are painless", "Chalazion is contagious", "Stye requires surgery"], "ans": "Stye is painful/acute; Chalazion is painless/chronic", "hint": "Infection vs Blockage."}, {"q": "Most common cause of conductive hearing loss in pharmacy?", "options": ["Infection", "Cerumen (wax) impaction", "Tinnitus", "Nerve damage"], "ans": "Cerumen (wax) impaction", "hint": "Physical block."}, {"q": "Absolute RED FLAG for ear pain?", "options": ["Itching", "Ear discharge with blood", "Wax", "Tinnitus"], "ans": "Ear discharge with blood", "hint": "Bleeding is severe."}, {"q": "Medical term for 'Swimmer's Ear'?", "options": ["Otitis media", "Otitis externa", "Presbycusis", "Tinnitus"], "ans": "Otitis externa", "hint": "Outer canal."}, {"q": "Primary symptom of Otitis Externa?", "options": ["Pain on tragus touch", "Ringing", "Deafness", "Vertigo"], "ans": "Pain on tragus touch", "hint": "Tragus sign."}, {"q": "Vital instruction when using ear drops for wax?", "options": ["Boil first", "Tilt head and wait 5 mins", "Freeze them", "Use cotton bud"], "ans": "Tilt head and wait 5 mins", "hint": "Gravity."}, {"q": "When is GP referral necessary for tinnitus?", "options": ["Always", "Never", "If pulsatile (rhythmic) or unilateral", "If bilateral"], "ans": "If pulsatile (rhythmic) or unilateral", "hint": "Vascular risk."}, {"q": "Infection more common in children?", "options": ["Otitis media", "Otitis externa", "Tinnitus", "Wax"], "ans": "Otitis media", "hint": "Middle ear."}, {"q": "Why avoid drops if eardrum is perforated?", "options": ["Hurts", "Toxicity/infection inside middle ear", "Does nothing", "Deafness"], "ans": "Toxicity/infection inside middle ear", "hint": "No barrier."}, {"q": "Age-related hearing loss is called?", "options": ["Tinnitus", "Presbycusis", "Vertigo", "Otitis"], "ans": "Presbycusis", "hint": "Normal aging."}, {"q": "Best prevention for Swimmer's Ear?", "options": ["Keep ear dry", "Swim more", "Cotton buds", "Oil daily"], "ans": "Keep ear dry", "hint": "Moisture breeds bacteria."}, {"q": "Type 1 (Allergic Rhinitis) is mediated by?", "options": ["IgG", "IgM", "IgE", "IgA"], "ans": "IgE", "hint": "Allergy antibody."}, {"q": "Vasomotor rhinitis is triggered by?", "options": ["Spicy food", "Temperature changes/smoke", "Pollen", "Viruses"], "ans": "Temperature changes/smoke", "hint": "Nervous sensitivity."}, {"q": "Rhinitis medicamentosa is caused by overusing?", "options": ["Steroids", "Topical decongestants", "Saline", "Antihistamines"], "ans": "Topical decongestants", "hint": "Rebound congestion."}, {"q": "Sensitization phase produces?", "options": ["Histamine", "Specific IgE", "Leukotrienes", "Eosinophils"], "ans": "Specific IgE", "hint": "Priming."}, {"q": "Early-phase mediator triggering immediate sneezing?", "options": ["Histamine", "Leukotrienes", "Cortisol", "Bradykinin"], "ans": "Histamine", "hint": "Fast acting."}, {"q": "Gold standard for late-phase inflammation?", "options": ["Decongestants", "Intranasal Corticosteroids", "Paracetamol", "Antihistamines"], "ans": "Intranasal Corticosteroids", "hint": "Shuts down cascade."}, {"q": "Montelukast belongs to which class?", "options": ["Antihistamine", "Steroid", "Leukotriene Receptor Antagonist", "Decongestant"], "ans": "Leukotriene Receptor Antagonist", "hint": "Blocks LTs."}, {"q": "Montelukast Black Box warning?", "options": ["Liver failure", "Neuropsychiatric events", "Kidney stones", "Cardiac arrest"], "ans": "Neuropsychiatric events", "hint": "Mood changes."}, {"q": "Max duration for topical decongestants?", "options": ["3-5 days", "14 days", "1 month", "Indefinite"], "ans": "3-5 days", "hint": "Prevents tachyphylaxis."}, {"q": "Infective vs Allergic discharge?", "options": ["Clear", "Mucopurulent (thick/colored)", "Bloody", "Dry"], "ans": "Mucopurulent (thick/colored)", "hint": "Pus/WBCs."}, {"q": "Referral rule for infants 1m-1y with vomiting?", "options": ["1 hour", "6 hours", "24 hours", "1 week"], "ans": "24 hours", "hint": "Dehydration risk."}, {"q": "Sleep pattern diagnostic for anxiety?", "options": ["Early morning waking", "Difficulty falling asleep", "Oversleeping", "Nightmares"], "ans": "Difficulty falling asleep", "hint": "Racing mind."}, {"q": "Sleep pattern diagnostic for depression?", "options": ["Early morning awakening", "Difficulty falling asleep", "Sleepwalking", "Snoring"], "ans": "Early morning awakening", "hint": "Neurotransmitter linked."}, {"q": "Golden rule for N&V management?", "options": ["Stop vomiting", "Replace fluids (ORS)", "Antibiotics", "Surgery"], "ans": "Replace fluids (ORS)", "hint": "Hydration."}, {"q": "Projectile vomiting in neonates indicates?", "options": ["Normal", "Pyloric stenosis", "Overfeeding", "Teething"], "ans": "Pyloric stenosis", "hint": "Surgical emergency."}, {"q": "Why avoid Diphenhydramine in elderly?", "options": ["Alertness", "Antimuscarinic effects (falls/confusion)", "Addiction", "Cost"], "ans": "Antimuscarinic effects (falls/confusion)", "hint": "Beers criteria."}, {"q": "Who should avoid Diphenhydramine?", "options": ["Healthy adults", "Patients with Glaucoma/BPH", "Students", "Athletes"], "ans": "Patients with Glaucoma/BPH", "hint": "Retention risks."}, {"q": "First-line chronic insomnia treatment?", "options": ["Z-drugs", "CBT-I", "Melatonin", "Diphenhydramine"], "ans": "CBT-I", "hint": "Behavioral fix."}, {"q": "Drug class for motion sickness?", "options": ["Antihistamines", "Dopamine antagonists", "Steroids", "Bismuth"], "ans": "Antihistamines", "hint": "Vestibular block."}, {"q": "Red flag: Vomiting + Severe abdominal pain?", "options": ["Food poisoning", "Acute abdomen (Appendicitis)", "Pregnancy", "Stress"], "ans": "Acute abdomen (Appendicitis)", "hint": "Surgical."}, {"q": "Pain lasting >3 months is defined as?", "options": ["Acute", "Chronic", "Referred", "Neuropathic"], "ans": "Chronic", "hint": "Long-term."}, {"q": "Pain described as burning or electric?", "options": ["Nociceptive", "Neuropathic", "Somatic", "Visceral"], "ans": "Neuropathic", "hint": "Nerve damage."}, {"q": "NSAIDs primarily inhibit?", "options": ["Histamine", "Prostaglandins", "Dopamine", "Serotonin"], "ans": "Prostaglandins", "hint": "COX enzymes."}, {"q": "What does 'S' in SOCRATES mean?", "options": ["Site / Severity", "Swelling", "Sleep", "Smell"], "ans": "Site / Severity", "hint": "Location and 1-10 scale."}, {"q": "TUNAFISH red flag 'H'?", "options": ["Headache", "History of cancer", "Heartburn", "Hypertension"], "ans": "History of cancer", "hint": "Malignancy risk."}, {"q": "Max daily Paracetamol dose for adults?", "options": ["2g", "4g", "6g", "8g"], "ans": "4g", "hint": "Liver toxicity limit."}, {"q": "Preferred analgesic in elderly?", "options": ["Ibuprofen", "Paracetamol", "Naproxen", "Diclofenac"], "ans": "Paracetamol", "hint": "Avoid GI/renal NSAID risks."}, {"q": "Analgesic contraindicated in 3rd trimester?", "options": ["Paracetamol", "Ibuprofen", "Topical menthol", "Codeine"], "ans": "Ibuprofen", "hint": "Fetal heart vessels."}, {"q": "Allodynia is defined as?", "options": ["No pain", "Pain from non-painful stimulus", "Hyperalgesia", "Numbness"], "ans": "Pain from non-painful stimulus", "hint": "Sensitization."}, {"q": "Warfarin + Ibuprofen risk?", "options": ["Safe", "Severe bleeding", "Clotting", "Cancel out"], "ans": "Severe bleeding", "hint": "GI hemorrhage."}, {"q": "Diarrhoea clinical definition?", "options": ["1 loose stool", "2 loose stools", "3 or more loose/liquid stools/day", "5 solid stools"], "ans": "3 or more loose/liquid stools/day", "hint": "Frequency + Consistency."}, {"q": "Most common viral cause (winter bug)?", "options": ["Salmonella", "Norovirus", "E. coli", "Shigella"], "ans": "Norovirus", "hint": "Highly contagious."}, {"q": "Primary danger of diarrhoea?", "options": ["Weight gain", "Dehydration", "Hypertension", "Pain"], "ans": "Dehydration", "hint": "Fluid loss."}, {"q": "Red flag in stool?", "options": ["Watery", "Blood/Mucus (Dysentery)", "Brown", "Soft"], "ans": "Blood/Mucus (Dysentery)", "hint": "Invasive pathogen."}, {"q": "Habit change >40y referral reason?", "options": ["IBS", "Rule out colorectal cancer", "Viral", "Stress"], "ans": "Rule out colorectal cancer", "hint": "Sinister path."}, {"q": "Loperamide mechanism?", "options": ["Replaces salts", "Slows gut motility", "Kills bacteria", "Pain relief"], "ans": "Slows gut motility", "hint": "The brake."}, {"q": "Loperamide age limit?", "options": ["< 1y", "< 12y", "< 18y", "No limit"], "ans": "< 12y", "hint": "Paralytic ileus risk."}, {"q": "ORS key components?", "options": ["Glucose/Salts", "Antibiotics", "Laxatives", "Steroids"], "ans": "Glucose/Salts", "hint": "Co-transport."}, {"q": "Loperamide + Dysentery?", "options": ["Useful", "Contraindicated", "Safe", "Mandatory"], "ans": "Contraindicated", "hint": "Retains toxins."}, {"q": "Traveler's diarrhoea action?", "options": ["Wait", "Urgent referral", "Loperamide", "Ignore"], "ans": "Urgent referral", "hint": "Parasites/Exotic bugs."}, {"q": "Constipation definition (BMs per week)?", "options": ["< 1", "< 3", "< 5", "< 7"], "ans": "< 3", "hint": "Frequency metric."}, {"q": "Common supplement causing constipation?", "options": ["Vitamin C", "Iron", "Magnesium", "Zinc"], "ans": "Iron", "hint": "Pregnancy/Anemia meds."}, {"q": "Opioids mechanism for constipation?", "options": ["Increased acid", "Decreased motility", "Kills bacteria", "Diuresis"], "ans": "Decreased motility", "hint": "Paralyzes bowel."}, {"q": "Alternating diarrhoea/constipation?", "options": ["Cancer", "IBS", "Celiac", "Ulcer"], "ans": "IBS", "hint": "Functional disorder."}, {"q": "Safest laxative class (1st line)?", "options": ["Stimulant", "Osmotic", "Softener", "Bulk-forming"], "ans": "Bulk-forming", "hint": "Mimics fiber."}, {"q": "Ispaghula requirement?", "options": ["Chew it", "Drink with plenty of water", "Boil it", "Take dry"], "ans": "Drink with plenty of water", "hint": "Absorbs fluid to swell."}, {"q": "Fastest oral laxative onset?", "options": ["Bulk", "Softener", "Stimulant (Bisacodyl)", "Osmotic"], "ans": "Stimulant (Bisacodyl)", "hint": "6-12 hours."}, {"q": "Avoid stimulants in?", "options": ["Men", "Pregnancy", "Teens", "Elderly"], "ans": "Pregnancy", "hint": "Uterine contractions."}, {"q": "Lactulose class?", "options": ["Stimulant", "Bulk", "Osmotic", "Softener"], "ans": "Osmotic", "hint": "Draws water."}, {"q": "Laxative abuse risk group?", "options": ["Elderly men", "Young women (Eating disorders)", "Children", "Athletes"], "ans": "Young women (Eating disorders)", "hint": "Weight loss misuse."}, {"q": "Primary vs Secondary headache?", "options": ["Primary is a symptom", "Primary has no structural pathology", "Secondary is harmless", "Both are same"], "ans": "Primary has no structural pathology", "hint": "Self-contained."}, {"q": "Tension-type pain quality?", "options": ["Throbbing", "Band-like pressure", "Piercing", "Thunderclap"], "ans": "Band-like pressure", "hint": "Squeezing."}, {"q": "Migraine characteristic?", "options": ["Bilateral", "Unilateral throbbing + nausea", "Eye tearing", "Short duration"], "ans": "Unilateral throbbing + nausea", "hint": "Neurological."}, {"q": "Cluster headache symptom?", "options": ["Band-like", "Unilateral piercing + tearing/rhinorrhea", "Aura", "Gradual"], "ans": "Unilateral piercing + tearing/rhinorrhea", "hint": "Autonomic signs."}, {"q": "Thunderclap headache indicates?", "options": ["Migraine", "Subarachnoid Haemorrhage (SAH)", "Tension", "Sinus"], "ans": "Subarachnoid Haemorrhage (SAH)", "hint": "Emergency bleed."}, {"q": "Giant Cell Arteritis target?", "options": ["Aorta", "Temporal arteries", "Veins", "Heart"], "ans": "Temporal arteries", "hint": "Scalp tenderness."}, {"q": "Gold standard acute Migraine Tx?", "options": ["Triptans", "Beta-blockers", "Opioids", "TCA"], "ans": "Triptans", "hint": "5-HT agonists."}, {"q": "Triptan absolute contraindication?", "options": ["Asthma", "Coronary Artery Disease (CAD)", "Ulcer", "Tension headache"], "ans": "Coronary Artery Disease (CAD)", "hint": "Vasoconstriction."}, {"q": "Medication Overuse Headache (MOH)?", "options": ["Using analgesics >2 days/week", "Underdosing", "Taking vitamins", "Drinking coffee"], "ans": "Using analgesics >2 days/week", "hint": "Rebound."}, {"q": "Migraine prophylaxis?", "options": ["Sumatriptan", "Propranolol", "Paracetamol", "Ibuprofen"], "ans": "Propranolol", "hint": "Beta-blocker."}, {"q": "Objective of NRT?", "options": ["Aversion", "Controlled nicotine delivery without toxins", "Block dopamine", "Get high"], "ans": "Controlled nicotine delivery without toxins", "hint": "No tar/CO."}, {"q": "Patch duration?", "options": ["4h", "10h", "16-24h", "72h"], "ans": "16-24h", "hint": "Steady baseline."}, {"q": "Gum technique?", "options": ["Swallow", "Chew & Park", "Crush", "Melt"], "ans": "Chew & Park", "hint": "Buccal absorption."}, {"q": "Why avoid acidic drinks before NRT gum?", "options": ["Stains teeth", "Reduces nicotine absorption", "Explodes", "Causes sleep"], "ans": "Reduces nicotine absorption", "hint": "pH dependent."}, {"q": "Fastest NRT delivery?", "options": ["Patch", "Gum", "Nasal spray", "Lozenge"], "ans": "Nasal spray", "hint": "Vascular mucosa."}, {"q": "Heavy smoker strategy?", "options": ["Cold turkey", "Combination Therapy (Patch + Gum/Lozenge)", "Two patches", "Smoke less"], "ans": "Combination Therapy (Patch + Gum/Lozenge)", "hint": "Baseline + Rescue."}, {"q": "Caution group for NRT?", "options": ["Asthma", "Pregnant / Recent heart attack", "Diabetics", "Elderly"], "ans": "Pregnant / Recent heart attack", "hint": "Vasoconstrictor."}, {"q": "Vivid dreams on patch?", "options": ["Double dose", "Remove patch at night", "Take pills", "Ignore"], "ans": "Remove patch at night", "hint": "REM disruption."}, {"q": "NRT course duration?", "options": ["1 week", "8-12 weeks", "1 year", "3 days"], "ans": "8-12 weeks", "hint": "Brain rewiring."}, {"q": "Swallowing nicotine lozenge causes?", "options": ["Fast relief", "Nausea / Poor absorption", "Sleep", "Nothing"], "ans": "Nausea / Poor absorption", "hint": "GI distress."}, {"q": "Healthy vaginal pH is?", "options": ["Acidic", "Alkaline", "Neutral", "Basic"], "ans": "Acidic", "hint": "Protective."}, {"q": "Thrush (Yeast) discharge appearance?", "options": ["Clear", "White cottage cheese", "Grey", "Green"], "ans": "White cottage cheese", "hint": "Clumpy."}, {"q": "Bacterial Vaginosis (BV) odor?", "options": ["Floral", "Fishy", "Yeasty", "No odor"], "ans": "Fishy", "hint": "Volatile amines."}, {"q": "Trichomoniasis discharge?", "options": ["Clear", "Frothy yellow-green", "White", "Grey"], "ans": "Frothy yellow-green", "hint": "STI."}, {"q": "Which is treatable OTC?", "options": ["BV", "Trichomoniasis", "Thrush", "Chlamydia"], "ans": "Thrush", "hint": "Fungal only."}, {"q": "Defining symptom of Thrush?", "options": ["Fever", "Intense vulval itching", "Pain", "Odor"], "ans": "Intense vulval itching", "hint": "Pruritus."}, {"q": "First-time presentation of discharge?", "options": ["Sell OTC", "Refer to doctor", "Wait", "Wash"], "ans": "Refer to doctor", "hint": "Needs formal diagnosis."}, {"q": "Fluconazole convenience?", "options": ["Single oral dose", "7 days", "Cream", "Injection"], "ans": "Single oral dose", "hint": "Easy compliance."}, {"q": "Fluconazole in pregnancy?", "options": ["Safe", "Contraindicated", "Half dose", "Topical only"], "ans": "Contraindicated", "hint": "Systemic risk."}, {"q": "Dysuria + Discharge indicates?", "options": ["Normal", "Red Flag (STI/UTI)", "Yeast", "Allergy"], "ans": "Red Flag (STI/UTI)", "hint": "Needs antibiotics."}];
+    let currentQ = 0;
+    let score = 0;
+
+    function render() {
+        const qBox = document.getElementById('q-box');
+        if (currentQ >= questions.length) {
+            const pct = Math.round((score / questions.length) * 100);
+            qBox.innerHTML = `
+                <div style="text-align: center; padding: 30px 0;">
+                    <h2 style="color: #2c3e50; font-size: 2.2rem; margin-bottom: 10px;">Exam Complete!</h2>
+                    <p style="font-size: 1.8rem; color: ${pct >= 70 ? '#2ecc71' : '#e74c3c'}; font-weight: bold;">Final Score: ${score} / ${questions.length} (${pct}%)</p>
+                    <p style="color: #7f8c8d; font-size: 1.2rem; margin-top: 10px;">${pct >= 70 ? 'Excellent work, you are ready!' : 'Keep reviewing the material.'}</p>
+                </div>
+                <button class="btn btn-restart" style="display: block;" onclick="location.reload()">Restart Exam</button>
+            `;
+            document.getElementById('p-bar').style.width = '100%';
+            return;
+        }
+
+        const q = questions[currentQ];
+        document.getElementById('q-tracker').innerText = `Question: ${currentQ + 1} / ${questions.length}`;
+        document.getElementById('score-tracker').innerText = `Score: ${score}`;
+        document.getElementById('p-bar').style.width = `${(currentQ / questions.length) * 100}%`;
+
+        let html = `<div class='question'>${q.q}</div><div class='options'>`;
+        q.options.forEach(opt => {
+            const safeOpt = opt.replace(/'/g, "\'").replace(/"/g, '&quot;');
+            const safeAns = q.ans.replace(/'/g, "\'").replace(/"/g, '&quot;');
+            html += `<button class="opt-btn" onclick="checkAnswer('${safeOpt}', '${safeAns}', this)">${opt}</button>`;
+        });
+        
+        html += `</div>
+                 <div class="controls">
+                    <button id="hintBtn" class="btn btn-hint" onclick="showHint()">💡 Hint</button>
+                    <button id="nextBtn" class="btn btn-next" onclick="nextQuestion()">Next ➡️</button>
+                 </div>
+                 <div class='hint-box' id='hint'><strong>Rationale:</strong> ${q.hint}</div>`;
+        
+        qBox.innerHTML = html;
+    }
+
+    function checkAnswer(choice, ans, btn) {
+        const buttons = document.querySelectorAll('.opt-btn');
+        buttons.forEach(b => b.disabled = true);
+        
+        if (choice === ans) {
+            btn.classList.add('correct');
+            score++;
+            document.getElementById('score-tracker').innerText = `Score: ${score}`;
+        } else {
+            btn.classList.add('wrong');
+            buttons.forEach(b => {
+                if (b.innerText === ans) {
+                    b.classList.add('correct');
+                }
+            });
+        }
+        document.getElementById('nextBtn').style.display = 'block';
+        showHint();
+    }
+
+    function showHint() { 
+        document.getElementById('hint').style.display = 'block'; 
+        document.getElementById('hintBtn').disabled = true; 
+        document.getElementById('hintBtn').style.opacity = '0.5';
+    }
+    
+    function nextQuestion() { 
+        currentQ++; 
+        render(); 
+    }
+
+    render();
+</script>
+</body>
+</html>
